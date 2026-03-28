@@ -63,6 +63,7 @@
   .header .subtitle { color:var(--text-muted); font-size:1rem; }
   .header .meta { display:flex; justify-content:center; gap:24px; margin-top:16px; flex-wrap:wrap; }
   .header .meta span { background:var(--card); padding:6px 16px; border-radius:20px; font-size:0.85rem; border:1px solid var(--border); }
+  .header .data-note { color:var(--green); font-size:0.8rem; margin-top:12px; font-weight:600; }
 
   /* Section titles */
   .section-title { font-size:1.4rem; font-weight:700; margin:40px 0 20px; padding-bottom:10px; border-bottom:2px solid var(--accent); display:inline-block; }
@@ -188,42 +189,43 @@
       <span>Prepared: March 28, 2026</span>
       <span>Budget: ~$100 AUD/mo</span>
       <span>Timeline: 12 Weeks</span>
-      <span>Data: Shopify Orders + GA4 + Live Site Audit (90 days)</span>
+      <span>Data: Shopify Reports + GA4 + Live Site Audit (90 days)</span>
     </div>
+    <p class="data-note">Online Store only — eBay / Marketplace Connect orders excluded</p>
   </div>
 
   <!-- KPI Cards -->
   <div class="section-title">Key Performance Indicators</div>
   <div class="kpi-grid">
     <div class="kpi-card">
-      <div class="label">90-Day Revenue</div>
-      <div class="value" style="color:var(--accent)">$141,754</div>
-      <div class="sub neutral">218 orders — Shopify data</div>
+      <div class="label">90-Day Revenue (Online Store)</div>
+      <div class="value" style="color:var(--accent)">$11,416</div>
+      <div class="sub neutral">42 orders — Shopify Reports verified</div>
+    </div>
+    <div class="kpi-card">
+      <div class="label">Monthly Run Rate</div>
+      <div class="value" style="color:var(--cyan)">~$3,800</div>
+      <div class="sub neutral">$11,416 / 3 months</div>
     </div>
     <div class="kpi-card">
       <div class="label">Avg Order Value</div>
-      <div class="value" style="color:var(--cyan)">$650</div>
-      <div class="sub neutral">Median: $118 (skewed by bulk)</div>
+      <div class="value" style="color:var(--green)">$272</div>
+      <div class="sub neutral">$11,416 / 42 orders</div>
+    </div>
+    <div class="kpi-card">
+      <div class="label">Gross Sales (before returns)</div>
+      <div class="value" style="color:var(--purple)">$14,237</div>
+      <div class="sub bad">-$2,540 returns &middot; -$449 discounts</div>
     </div>
     <div class="kpi-card">
       <div class="label">Repeat Buyer Rate</div>
-      <div class="value bad">6.4%</div>
-      <div class="sub target">13 of 203 buyers — Target: 15%+</div>
+      <div class="value bad">7.2%</div>
+      <div class="sub target">Target: 15%+</div>
     </div>
     <div class="kpi-card">
-      <div class="label">$500+ Orders</div>
-      <div class="value" style="color:var(--green)">22.9%</div>
-      <div class="sub neutral">50 orders = $126K (89% of rev)</div>
-    </div>
-    <div class="kpi-card">
-      <div class="label">Top Product Risk</div>
-      <div class="value bad">37.8%</div>
-      <div class="sub neutral">Mega Dream ex = $53.6K alone</div>
-    </div>
-    <div class="kpi-card">
-      <div class="label">Top 3 Buyers</div>
-      <div class="value bad">47%</div>
-      <div class="sub neutral">$66.5K from 3 customers</div>
+      <div class="label">GA4 Conversion Rate</div>
+      <div class="value bad">1.29%</div>
+      <div class="sub target">38 purchases / 2,941 sessions</div>
     </div>
     <div class="kpi-card">
       <div class="label">Organic Search Share</div>
@@ -231,9 +233,9 @@
       <div class="sub target">Best engagement (73%) — Target: 15%+</div>
     </div>
     <div class="kpi-card">
-      <div class="label">Conversion Rate (GA4)</div>
-      <div class="value bad">1.29%</div>
-      <div class="sub target">Target: 2.5%+</div>
+      <div class="label">Website Sessions (90d)</div>
+      <div class="value" style="color:var(--blue)">2,941</div>
+      <div class="sub neutral">~980/mo — GA4 data</div>
     </div>
   </div>
 
@@ -252,7 +254,7 @@
   <div id="tab-funnel" class="tab-content active">
     <div class="chart-grid">
       <div class="chart-card">
-        <h3>Shopify Conversion Funnel (Last 90 Days)</h3>
+        <h3>Website Conversion Funnel (Last 90 Days)</h3>
         <div class="funnel">
           <div class="funnel-step" style="width:100%; background:var(--blue);">
             <div class="funnel-label">Sessions</div>
@@ -279,7 +281,7 @@
           </div>
         </div>
         <div class="insight">
-          <strong>The #1 leak:</strong> 91.5% of product viewers leave without adding to cart. Fixing this is worth more than any amount of new traffic.
+          <strong>The #1 leak:</strong> 93.7% of visitors leave without adding to cart. With only 2,941 sessions in 90 days, every visitor matters. Fixing cart-add rate is priority #1.
         </div>
       </div>
       <div class="chart-card">
@@ -332,15 +334,15 @@
   <div id="tab-products" class="tab-content">
     <div class="chart-grid">
       <div class="chart-card" style="grid-column: span 2;">
-        <h3>Product Conversion Funnel — Views vs Cart Adds vs Purchases</h3>
+        <h3>Product Conversion Funnel — Views vs Cart Adds vs Purchases (GA4)</h3>
         <canvas id="productFunnelChart"></canvas>
         <div class="insight">
-          <strong>Yu-Gi-Oh! products convert at 27x the rate of Pokemon.</strong> Limit Over Heroes: $68.71 revenue per view vs ~$2.50 for Pokemon products. This is a massive untapped opportunity.
+          <strong>Yu-Gi-Oh! products convert at 27x the rate of Pokemon.</strong> Limit Over Heroes: $104 revenue per view vs ~$2.50 for Pokemon products. This is a massive untapped opportunity.
         </div>
       </div>
     </div>
     <div class="chart-card" style="margin-bottom:32px;">
-      <h3>Product Performance Table</h3>
+      <h3>Product Performance Table (GA4 Website Data)</h3>
       <div style="overflow-x:auto;">
         <table class="data-table">
           <thead>
@@ -350,7 +352,7 @@
               <th>Cart Adds</th>
               <th>Purchased</th>
               <th>Revenue</th>
-              <th>View→Cart Rate</th>
+              <th>View&rarr;Cart Rate</th>
               <th>Revenue/View</th>
             </tr>
           </thead>
@@ -451,13 +453,13 @@
     </div>
     <div class="chart-grid">
       <div class="chart-card">
-        <h3>Revenue by Category</h3>
+        <h3>Revenue by Category (GA4 Website Sales)</h3>
         <canvas id="categoryChart"></canvas>
       </div>
       <div class="chart-card">
         <h3>Revenue per Product View ($/view)</h3>
         <canvas id="revenuePerViewChart"></canvas>
-        <div class="insight"><strong>Yu-Gi-Oh! generates $68/view</strong> vs $2.50/view for Pokemon. Even a small increase in YGO traffic would massively boost revenue.</div>
+        <div class="insight"><strong>Yu-Gi-Oh! generates $104/view</strong> vs $2.50/view for Pokemon. Even a small increase in YGO traffic would massively boost revenue.</div>
       </div>
     </div>
   </div>
@@ -467,8 +469,8 @@
     <div class="problems-grid">
       <div class="problem-card" style="border-left:4px solid var(--green);">
         <div class="problem-num" style="color:var(--green);">&#10003;</div>
-        <h4>$500 Free Shipping Threshold is Driving High-Value Orders</h4>
-        <p class="evidence">22.9% of orders (50) hit the $500 threshold, generating $126.4K — that's 89% of total revenue. The strategy to push higher AOV is clearly working.</p>
+        <h4>$500 Free Shipping Threshold Driving High AOV</h4>
+        <p class="evidence">AOV of $272 is strong for a TCG store. The $500 threshold (raised from $200 last week) encourages customers to bundle up. This is a deliberate strategy to push high-value orders.</p>
       </div>
       <div class="problem-card" style="border-left:4px solid var(--green);">
         <div class="problem-num" style="color:var(--green);">&#10003;</div>
@@ -488,7 +490,7 @@
       <div class="problem-card" style="border-left:4px solid var(--green);">
         <div class="problem-num" style="color:var(--green);">&#10003;</div>
         <h4>Loyalty Program Installed (Appstle)</h4>
-        <p class="evidence">Points-based loyalty widget is live on the site. This is the right tool for improving repeat buyer rate (currently 6.4%). Needs promotion on product pages and in emails.</p>
+        <p class="evidence">Points-based loyalty widget is live on the site. This is the right tool for improving repeat buyer rate (currently 7.2%). Needs promotion on product pages and in emails.</p>
       </div>
       <div class="problem-card" style="border-left:4px solid var(--green);">
         <div class="problem-num" style="color:var(--green);">&#10003;</div>
@@ -497,13 +499,13 @@
       </div>
       <div class="problem-card" style="border-left:4px solid var(--green);">
         <div class="problem-num" style="color:var(--green);">&#10003;</div>
-        <h4>Strong Multi-Category Revenue Mix</h4>
-        <p class="evidence">Pokemon (55.8%), One Piece (28.9%), Yu-Gi-Oh! (15.3%). Three strong categories means you're not a one-trick shop. One Piece at $41K is a surprise powerhouse.</p>
+        <h4>Yu-Gi-Oh! is a Hidden Revenue Machine</h4>
+        <p class="evidence">YGO products generate $104/view vs $2.50/view for Pokemon on the website (GA4 data). Just 45 product views generated $3,092 in revenue. This category punches way above its weight.</p>
       </div>
       <div class="problem-card" style="border-left:4px solid var(--green);">
         <div class="problem-num" style="color:var(--green);">&#10003;</div>
-        <h4>Monday Revenue Dominance</h4>
-        <p class="evidence">Monday = $74.3K (52% of revenue, 127 orders). Your customers have a clear buying pattern. This is a goldmine for timing promotions, drops, and content around Sunday/Monday.</p>
+        <h4>Live Chat (Tidio) Installed</h4>
+        <p class="evidence">Tidio chat widget is active on the site. Real-time support helps convert hesitant buyers, especially for high-value orders. A smart tool for a store with $272 AOV.</p>
       </div>
     </div>
   </div>
@@ -513,33 +515,33 @@
     <div class="problems-grid">
       <div class="problem-card critical">
         <div class="problem-num">#1</div>
-        <h4>Revenue Concentrated in 1 Product + 3 Customers</h4>
-        <p class="evidence">Mega Dream ex = $53.6K (37.8% of total revenue). Top 3 buyers = $66.5K (47% of revenue). If Mega Dream goes out of stock or one whale stops buying, revenue collapses.</p>
-        <div class="impact positive">Fix potential: Diversify product mix — grow One Piece ($41K already!) and Yu-Gi-Oh! to reduce single-product dependency below 25%</div>
+        <h4>72.3% of Checkout Starters Don't Complete Purchase</h4>
+        <p class="evidence">137 reached checkout, only 38 completed. That's 99 abandoned checkouts in 90 days. Cart recovery emails are active but recovery rate is still low. At $272 AOV, even recovering 10 of those = ~$2,700.</p>
+        <div class="impact positive">Fix potential: Optimise cart email timing (1hr/6hr/24hr sequence) + offer bundle upsells to push carts closer to $500 for free shipping</div>
       </div>
       <div class="problem-card critical">
         <div class="problem-num">#2</div>
-        <h4>72.3% of Checkout Starters Don't Complete</h4>
-        <p class="evidence">137 reached checkout, only 38 completed. Cart recovery emails are active but recovery rate is still low. $500 free shipping threshold means most orders don't qualify — only 22.9% hit it.</p>
-        <div class="impact positive">Fix potential: +$2,900/quarter. Optimise cart email timing + offer bundle upsells to push carts closer to $500</div>
+        <h4>Only 2,941 Sessions in 90 Days (~33/day)</h4>
+        <p class="evidence">With just ~33 visitors per day, you need every session to count. Paid Shopping drives 70% of traffic — if ad spend pauses, traffic collapses. Organic Search is only 6.5% despite having the best engagement rate (73%).</p>
+        <div class="impact positive">Fix potential: SEO + blog content can build a free traffic floor. Target: double organic from 90 to 300+ sessions/quarter</div>
       </div>
       <div class="problem-card high">
         <div class="problem-num">#3</div>
-        <h4>Only 6.4% Repeat Buyer Rate</h4>
-        <p class="evidence">203 unique buyers but only 13 came back. Loyalty program (Appstle) is installed but not driving repeat purchases. TCG customers are naturally repeat buyers — you're leaving money on the table.</p>
-        <div class="impact positive">Fix potential: +$8K–$14K/quarter. Moving repeat rate from 6.4% → 15% with post-purchase flows + loyalty program promotion</div>
+        <h4>Only 7.2% Repeat Buyer Rate</h4>
+        <p class="evidence">TCG customers naturally buy repeatedly — new sets drop every few months. Loyalty program (Appstle) is installed but not driving repeat purchases. No post-purchase email flow is bringing customers back.</p>
+        <div class="impact positive">Fix potential: Moving repeat rate from 7.2% to 15% could add ~$1,700+/quarter in repeat revenue based on current customer base</div>
       </div>
       <div class="problem-card high">
         <div class="problem-num">#4</div>
-        <h4>Zero Organic Search Strategy</h4>
-        <p class="evidence">Organic Search = 73.33% engagement (best channel!) but only 6.5% of traffic. No blog. No content. Zero SEO investment. Competitors are ranking for "pokemon booster box australia".</p>
-        <div class="impact positive">Fix potential: +$1,500/mo in free organic traffic revenue</div>
+        <h4>Google Ads Sending Traffic to Zero-Converting Pages</h4>
+        <p class="evidence">70% of GA4 traffic is Paid Shopping. OP13: 152 views, $0 revenue. PSA 8: 137 views, $90 revenue. Meanwhile /collections/sealed-boxes converts at 3.64% — nearly 3x the site average.</p>
+        <div class="impact positive">Fix potential: 2-3x paid conversion by redirecting ads to collection pages instead of individual products</div>
       </div>
       <div class="problem-card medium">
         <div class="problem-num">#5</div>
-        <h4>Google Ads Sending Traffic to Zero-Converting Pages</h4>
-        <p class="evidence">70% of GA4 traffic is Paid Shopping. OP13: 144 sessions, $0 revenue. PSA 8: 107 sessions, $0. Meanwhile /collections/sealed-boxes converts at 3.64%.</p>
-        <div class="impact positive">Fix potential: 2x paid conversion by redirecting ads to collection pages instead of individual products</div>
+        <h4>$2,540 in Returns (17.8% of Gross Sales)</h4>
+        <p class="evidence">$14,237 gross sales minus $2,540 returns = $11,416 net. That's a 17.8% return rate, which is high. Investigate which products are being returned and whether product descriptions or photos could be improved.</p>
+        <div class="impact positive">Fix potential: Cutting return rate in half would recover ~$1,270/quarter in lost revenue</div>
       </div>
     </div>
   </div>
@@ -548,59 +550,59 @@
   <div id="tab-actions" class="tab-content">
     <div class="chart-card" style="margin-bottom:24px;">
       <h3>Quick Win Playbook — Do In Order</h3>
-      <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:24px;">Each action is backed by Shopify + GA4 data. Ordered by revenue impact and effort.</p>
+      <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:24px;">Each action is backed by verified Shopify Reports + GA4 data. Ordered by revenue impact and effort.</p>
       <div class="timeline">
         <div class="timeline-item">
           <div class="day-label">Day 1 — Quick Wins (Already Have the Tools)</div>
           <h4>Add Instagram link to site footer + header</h4>
-          <p>Footer has zero social links. 428 Instagram visitors can't find your pack opening content. Your eBay reviews are on the homepage — your Insta should be too.</p>
+          <p>Footer has zero social links right now. 428 Instagram visitors are already coming — make it easy for website visitors to find your pack opening content.</p>
         </div>
         <div class="timeline-item">
           <h4>Promote Appstle loyalty program on product pages</h4>
-          <p>Loyalty widget is installed but hidden. Only 6.4% repeat rate (13/203 buyers). Add "Earn X points on this purchase" on product pages to drive signups.</p>
+          <p>Loyalty widget is installed but not prominent. Only 7.2% repeat rate. Add "Earn X points on this purchase" on product pages to drive signups and return visits.</p>
         </div>
         <div class="timeline-item">
           <h4>Optimise cart recovery email sequence</h4>
-          <p>Emails are active but recovery is low on 137 abandoned checkouts. Test 3-email sequence: 1hr (reminder), 6hr (social proof), 24hr (urgency + $10 off).</p>
+          <p>99 abandoned checkouts in 90 days at $272 AOV. Test 3-email sequence: 1hr (reminder), 6hr (social proof from eBay reviews), 24hr (urgency + $10 off).</p>
         </div>
         <div class="timeline-item">
-          <div class="day-label">Day 2–3 — Revenue Diversification</div>
-          <h4>Feature One Piece prominently on homepage</h4>
-          <p>One Piece = $41K (28.9% of revenue) but not shown on homepage "Newly Listed". EB-03 Heroines did $39.4K from just 23 units. Give it homepage real estate.</p>
-        </div>
-        <div class="timeline-item">
-          <h4>Create "Bundle Deals" to push orders toward $500</h4>
-          <p>7 orders stuck at $400–499 (just missed free shipping). Create "2-box bundles" or "Complete Set" bundles that land at $500+ to capture the threshold.</p>
-        </div>
-        <div class="timeline-item">
-          <h4>Launch Yu-Gi-Oh! Google Shopping campaign</h4>
-          <p>YGO converts at 27x Pokemon rate — $68/view vs $2.50/view. $21.6K revenue from just 24 units. Huge untapped ad opportunity.</p>
-        </div>
-        <div class="timeline-item">
-          <div class="day-label">Day 4–5 — Google Ads Restructure</div>
+          <div class="day-label">Day 2–3 — Google Ads Restructure</div>
           <h4>Pause ads for zero-converting products</h4>
-          <p>OP13 (144 sessions, $0), PSA 8 (107 sessions, $0) — wasting ad spend on pages that don't convert. Redirect budget to collection pages.</p>
+          <p>OP13 (152 views, $0 revenue), PSA 8 (137 views, $90) — wasting ad spend on pages that don't convert. Redirect budget to what works.</p>
         </div>
         <div class="timeline-item">
           <h4>Send Google Ads to /collections/sealed-boxes</h4>
-          <p>Collection pages convert at 3.64% vs 0.84% homepage. Sealed boxes are your bread and butter — send paid traffic there.</p>
+          <p>Collection pages convert at 3.64% vs 0.84% homepage. Sealed boxes are your bread and butter — send paid traffic to collections, not individual products.</p>
         </div>
         <div class="timeline-item">
-          <div class="day-label">Day 5–7 — Content & Retention Engine</div>
+          <h4>Launch Yu-Gi-Oh! Google Shopping campaign</h4>
+          <p>YGO converts at $104/view vs $2.50/view for Pokemon (GA4 data). Currently getting only 45 views — even doubling that to 90 views could add $4,700+ in revenue.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="day-label">Day 4–5 — Retention & Upsells</div>
+          <h4>Create "Bundle Deals" to push orders toward $500</h4>
+          <p>AOV is $272 — many orders are in the $200-400 range. Create "2-box bundles" or "Complete Set" bundles that land at $500+ to unlock free shipping.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Build post-purchase email flow (3 emails)</h4>
+          <p>After purchase: thank you + loyalty points reminder → 7 days: related products → 21 days: new drop alert. Turn one-time buyers into repeat customers.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="day-label">Day 5–7 — Content & SEO Engine</div>
           <h4>Enable Shopify blog + first SEO post</h4>
           <p>Organic Search has 73.33% engagement (best channel!) but only 6.5% of traffic. Target: "best japanese pokemon booster boxes australia 2026".</p>
         </div>
         <div class="timeline-item">
           <h4>Schedule pack opening Reels for Sundays</h4>
-          <p>You're already filming — post Sundays to drive Monday purchases (Monday = $74.3K, 58% of all orders). Pre-drop hype → Monday buying frenzy.</p>
+          <p>You're already filming — post Sundays to drive Monday purchases. Pre-drop hype → Monday buying frenzy. Link directly to product pages in bio.</p>
         </div>
         <div class="timeline-item">
-          <h4>Build post-purchase email flow (3 emails)</h4>
-          <p>After purchase: thank you + loyalty points reminder → 7 days: related products → 21 days: new drop alert. Turn 203 one-time buyers into repeat customers.</p>
+          <h4>Investigate high return rate</h4>
+          <p>$2,540 in returns (17.8% of gross) is eating into margins. Check which products are returned most and improve descriptions/photos for those items.</p>
         </div>
         <div class="timeline-item">
           <h4>A/B test announcement bar copy</h4>
-          <p>$500 free shipping is working (22.9% of orders qualify, 89% of revenue). Test: "Free shipping over $500" vs "Spend $500+ = Free Shipping + Bonus Card".</p>
+          <p>$500 free shipping is the right strategy. Test: "Free delivery on orders over $500" vs "Spend $500+ = Free Shipping + Bonus Card" to see which drives more upsells.</p>
         </div>
       </div>
     </div>
@@ -613,62 +615,62 @@
 
   <!-- TAB 6: Targets & Metrics -->
   <div id="tab-targets" class="tab-content">
-    <div class="section-title" style="margin-top:0;">Current (Shopify + GA4) → 12-Week Target</div>
+    <div class="section-title" style="margin-top:0;">Current (Verified) → 12-Week Target</div>
     <div class="metrics-grid">
       <div class="metric-row">
-        <div class="metric-name">Monthly Revenue</div>
-        <div class="metric-vals"><span class="current">~$47K/mo</span><span class="arrow">→</span><span class="target-val">$60K+/mo</span></div>
+        <div class="metric-name">Monthly Revenue (Online Store)</div>
+        <div class="metric-vals"><span class="current">~$3,800/mo</span><span class="arrow">&rarr;</span><span class="target-val">$6,000+/mo</span></div>
       </div>
       <div class="metric-row">
         <div class="metric-name">GA4 Conversion Rate</div>
-        <div class="metric-vals"><span class="current">1.29%</span><span class="arrow">→</span><span class="target-val">2.5%+</span></div>
+        <div class="metric-vals"><span class="current">1.29%</span><span class="arrow">&rarr;</span><span class="target-val">2.5%+</span></div>
       </div>
       <div class="metric-row">
         <div class="metric-name">Repeat Buyer Rate</div>
-        <div class="metric-vals"><span class="current">6.4% (13/203)</span><span class="arrow">→</span><span class="target-val">15%+</span></div>
+        <div class="metric-vals"><span class="current">7.2%</span><span class="arrow">&rarr;</span><span class="target-val">15%+</span></div>
       </div>
       <div class="metric-row">
-        <div class="metric-name">Revenue Concentration (Top Product)</div>
-        <div class="metric-vals"><span class="current">37.8% (1 SKU)</span><span class="arrow">→</span><span class="target-val">&lt;25%</span></div>
+        <div class="metric-name">Checkout Completion Rate</div>
+        <div class="metric-vals"><span class="current">27.7% (38/137)</span><span class="arrow">&rarr;</span><span class="target-val">40%+</span></div>
       </div>
       <div class="metric-row">
-        <div class="metric-name">Checkout Completion</div>
-        <div class="metric-vals"><span class="current">27.7%</span><span class="arrow">→</span><span class="target-val">40%+</span></div>
-      </div>
-      <div class="metric-row">
-        <div class="metric-name">Cart Recovery Rate</div>
-        <div class="metric-vals"><span class="current">Active (low)</span><span class="arrow">→</span><span class="target-val">10%+</span></div>
+        <div class="metric-name">Return Rate</div>
+        <div class="metric-vals"><span class="current">17.8%</span><span class="arrow">&rarr;</span><span class="target-val">&lt;10%</span></div>
       </div>
       <div class="metric-row">
         <div class="metric-name">Organic Search Share</div>
-        <div class="metric-vals"><span class="current">6.5%</span><span class="arrow">→</span><span class="target-val">15%+</span></div>
+        <div class="metric-vals"><span class="current">6.5%</span><span class="arrow">&rarr;</span><span class="target-val">15%+</span></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-name">Monthly Sessions</div>
+        <div class="metric-vals"><span class="current">~980/mo</span><span class="arrow">&rarr;</span><span class="target-val">1,500+/mo</span></div>
       </div>
       <div class="metric-row">
         <div class="metric-name">Email-Driven Revenue</div>
-        <div class="metric-vals"><span class="current">Near $0</span><span class="arrow">→</span><span class="target-val">10%+ of total</span></div>
+        <div class="metric-vals"><span class="current">Near $0</span><span class="arrow">&rarr;</span><span class="target-val">10%+ of total</span></div>
       </div>
       <div class="metric-row">
-        <div class="metric-name">One Piece Revenue Share</div>
-        <div class="metric-vals"><span class="current">28.9%</span><span class="arrow">→</span><span class="target-val">30%+ (grow alongside Pokemon)</span></div>
+        <div class="metric-name">Cart Recovery Rate</div>
+        <div class="metric-vals"><span class="current">Active (low)</span><span class="arrow">&rarr;</span><span class="target-val">10%+</span></div>
       </div>
       <div class="metric-row">
-        <div class="metric-name">$500+ Order Rate</div>
-        <div class="metric-vals"><span class="current" style="color:var(--green)">22.9% ✓</span><span class="arrow">→</span><span class="target-val">25%+ (bundle upsells)</span></div>
+        <div class="metric-name">YGO Revenue Share</div>
+        <div class="metric-vals"><span class="current" style="color:var(--green)">$104/view ✓</span><span class="arrow">&rarr;</span><span class="target-val">Double YGO traffic</span></div>
       </div>
       <div class="metric-row">
         <div class="metric-name">Blog Organic Traffic</div>
-        <div class="metric-vals"><span class="current">0/mo</span><span class="arrow">→</span><span class="target-val">300+/mo</span></div>
+        <div class="metric-vals"><span class="current">0/mo</span><span class="arrow">&rarr;</span><span class="target-val">300+/mo</span></div>
       </div>
       <div class="metric-row">
         <div class="metric-name">Loyalty Program Engagement</div>
-        <div class="metric-vals"><span class="current">Installed, low usage</span><span class="arrow">→</span><span class="target-val">20%+ of orders</span></div>
+        <div class="metric-vals"><span class="current">Installed, low usage</span><span class="arrow">&rarr;</span><span class="target-val">20%+ of orders</span></div>
       </div>
     </div>
 
     <div class="chart-card">
-      <h3>Expected Revenue Impact Over 12 Weeks</h3>
+      <h3>Expected Online Store Revenue Over 12 Weeks</h3>
       <canvas id="projectionChart"></canvas>
-      <div class="insight"><strong>Conservative estimate:</strong> Fixing checkout completion + growing repeat buyers + diversifying products could push monthly revenue from ~$47K to $60K+ by Week 12. The biggest gains come from repeat buyers and product diversification, not more traffic.</div>
+      <div class="insight"><strong>Conservative estimate:</strong> Fixing checkout completion + growing repeat buyers + redirecting ads to high-converting pages could push monthly online store revenue from ~$3,800 to $6,000+ by Week 12. The biggest gains come from converting existing traffic better, not just driving more.</div>
     </div>
   </div>
 </div>
@@ -821,14 +823,14 @@ new Chart(document.getElementById('productFunnelChart'), {
   }
 });
 
-// Category Pie — Actual Shopify revenue (90 days)
+// Category Pie — GA4 website revenue by category (top products only)
 new Chart(document.getElementById('categoryChart'), {
   type: 'doughnut',
   data: {
-    labels: ['Pokemon (55.8%)', 'One Piece (28.9%)', 'Yu-Gi-Oh! (15.3%)'],
+    labels: ['Yu-Gi-Oh! (63.4%)', 'Pokemon (31.1%)', 'One Piece (5.5%)'],
     datasets: [{
-      data: [79104, 41012, 21638],
-      backgroundColor: ['#facc15', '#ef4444', '#a855f7'],
+      data: [3092, 1514, 277],
+      backgroundColor: ['#a855f7', '#facc15', '#ef4444'],
       borderWidth: 0,
     }]
   },
@@ -891,14 +893,14 @@ new Chart(document.getElementById('calendarChart'), {
   }
 });
 
-// Revenue Projection Chart
+// Revenue Projection Chart — Online Store only
 new Chart(document.getElementById('projectionChart'), {
   type: 'line',
   data: {
     labels: ['Now', 'Wk 2', 'Wk 4', 'Wk 6', 'Wk 8', 'Wk 10', 'Wk 12'],
     datasets: [{
       label: 'Projected Monthly Revenue',
-      data: [47000, 48500, 50000, 52000, 54000, 57000, 62000],
+      data: [3800, 4100, 4500, 4900, 5300, 5700, 6200],
       borderColor: '#22c55e',
       backgroundColor: 'rgba(34,197,94,0.1)',
       fill: true,
@@ -907,7 +909,7 @@ new Chart(document.getElementById('projectionChart'), {
       pointBackgroundColor: '#22c55e',
     }, {
       label: 'Current Baseline',
-      data: [47000, 47000, 47000, 47000, 47000, 47000, 47000],
+      data: [3800, 3800, 3800, 3800, 3800, 3800, 3800],
       borderColor: '#ef4444',
       borderDash: [5, 5],
       pointRadius: 0,
@@ -918,7 +920,7 @@ new Chart(document.getElementById('projectionChart'), {
     responsive: true,
     plugins: { legend: { position: 'top' } },
     scales: {
-      y: { beginAtZero: false, min: 1000, ticks: { callback: v => '$' + v }, grid: { color: '#1e2130' } },
+      y: { beginAtZero: false, min: 2000, ticks: { callback: v => '$' + v.toLocaleString() }, grid: { color: '#1e2130' } },
       x: { grid: { display: false } }
     }
   }
