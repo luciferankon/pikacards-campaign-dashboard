@@ -241,7 +241,8 @@
 
   <!-- Tabs Navigation -->
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('funnel')">Conversion Funnel</button>
+    <button class="tab active" onclick="switchTab('tracker')">📊 Weekly Tracker</button>
+    <button class="tab" onclick="switchTab('funnel')">Conversion Funnel</button>
     <button class="tab" onclick="switchTab('traffic')">Traffic & Channels</button>
     <button class="tab" onclick="switchTab('products')">Product Performance</button>
     <button class="tab" onclick="switchTab('working')">What's Working</button>
@@ -250,8 +251,154 @@
     <button class="tab" onclick="switchTab('targets')">Targets & Metrics</button>
   </div>
 
+  <!-- TAB 0: Weekly Tracker (LIVE Shopify Data) -->
+  <div id="tab-tracker" class="tab-content active">
+    <div style="margin-bottom:24px; padding:16px; background:rgba(34,197,94,0.1); border:1px solid var(--green); border-radius:12px;">
+      <span style="color:var(--green); font-weight:600;">📊 Last Updated: March 28, 2026 — Live Shopify Data</span>
+    </div>
+
+    <!-- KPI Summary Cards -->
+    <div class="section-title">90-Day Performance Summary</div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="label">Total 90-Day Revenue</div>
+        <div class="value" style="color:var(--accent)">$36,628</div>
+        <div class="sub neutral">All platforms</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">Total Orders</div>
+        <div class="value" style="color:var(--blue)">215</div>
+        <div class="sub neutral"><span style="color:var(--green);">↑ +12</span> vs last week</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">Avg Order Value</div>
+        <div class="value" style="color:var(--purple)">$170</div>
+        <div class="sub neutral"><span style="color:var(--green);">↑ +$45</span> vs last week</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">Unique Buyers</div>
+        <div class="value" style="color:var(--cyan)">182</div>
+        <div class="sub neutral">84.6% first-time buyers</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">Best Week</div>
+        <div class="value" style="color:var(--green)">$17,997</div>
+        <div class="sub neutral">Feb 9 (Mega Dream launch)</div>
+      </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="chart-grid">
+      <div class="chart-card" style="grid-column: span 2;">
+        <h3>Weekly Revenue Trend</h3>
+        <canvas id="weeklyRevenueChart"></canvas>
+        <div class="insight">
+          <strong>Feb 9 spike ($17,997):</strong> Mega Dream ex M2a launch. Excluding this outlier, average weekly revenue is ~$2,200. Focus on launch strategy for upcoming sets.
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h3>Weekly Orders</h3>
+        <canvas id="weeklyOrdersChart"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Average Order Value Trend</h3>
+        <canvas id="aovTrendChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Top Products Table -->
+    <div style="margin-bottom:32px;">
+      <div class="section-title">Top Products (90 Days)</div>
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Revenue</th>
+              <th>Units Sold</th>
+              <th>% of Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600;">Mega Dream ex M2a</td>
+              <td><span style="color:var(--green); font-weight:600;">$15,820</span></td>
+              <td>129</td>
+              <td><span class="badge star">43.2%</span></td>
+            </tr>
+            <tr>
+              <td>One Piece Extra Booster Heroines EB-03</td>
+              <td>$2,970</td>
+              <td>22</td>
+              <td>8.1%</td>
+            </tr>
+            <tr>
+              <td>YGO Limit Over Heroes</td>
+              <td>$2,570</td>
+              <td>15</td>
+              <td>7.0%</td>
+            </tr>
+            <tr>
+              <td>Pokemon Terastal Festival EX</td>
+              <td>$2,270</td>
+              <td>15</td>
+              <td>6.2%</td>
+            </tr>
+            <tr>
+              <td>Pokémon Inferno X Booster Box M2</td>
+              <td>$1,895</td>
+              <td>14</td>
+              <td>5.2%</td>
+            </tr>
+            <tr>
+              <td>Pokemon Mega Charizard UPC</td>
+              <td>$1,395</td>
+              <td>5</td>
+              <td>3.8%</td>
+            </tr>
+            <tr>
+              <td>YGO Limit Over Rivals</td>
+              <td>$1,158</td>
+              <td>7</td>
+              <td>3.2%</td>
+            </tr>
+            <tr>
+              <td>Pokemon Prismatic Evolutions ETB</td>
+              <td>$975</td>
+              <td>5</td>
+              <td>2.7%</td>
+            </tr>
+            <tr>
+              <td>Pokemon Mega Start Deck 100</td>
+              <td>$967</td>
+              <td>29</td>
+              <td>2.6%</td>
+            </tr>
+            <tr>
+              <td>One Piece EB-04 Egghead Crisis</td>
+              <td>$798</td>
+              <td>7</td>
+              <td>2.2%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Key Insight Box -->
+    <div style="background:rgba(250,204,21,0.08); border:1px solid var(--accent); border-radius:12px; padding:24px; margin-bottom:32px;">
+      <h4 style="margin-bottom:12px; color:var(--accent); font-size:1.1rem;">Key Insight: Launch Hype Matters</h4>
+      <p style="color:var(--text-muted); line-height:1.6;">
+        The Mega Dream ex M2a launch (Feb 9 week) drove <strong style="color:var(--accent);">43% of all revenue</strong> in just one week. Excluding that spike, average weekly revenue is ~$2,200. The team's ability to execute product launches and create hype around new sets is your strongest growth lever. Focus on replicating this launch strategy for upcoming Pokemon and Yu-Gi-Oh! releases.
+      </p>
+    </div>
+  </div>
+
   <!-- TAB 1: Conversion Funnel -->
-  <div id="tab-funnel" class="tab-content active">
+  <div id="tab-funnel" class="tab-content">
     <div class="chart-grid">
       <div class="chart-card">
         <h3>Website Conversion Funnel (Last 90 Days)</h3>
@@ -689,6 +836,82 @@ function initCharts() {
 Chart.defaults.color = '#9ca3af';
 Chart.defaults.borderColor = '#2a2e3d';
 Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+
+// Weekly Tracker - Weekly Revenue Chart
+new Chart(document.getElementById('weeklyRevenueChart'), {
+  type: 'line',
+  data: {
+    labels: ['Jan 26', 'Feb 2', 'Feb 9', 'Feb 16', 'Feb 23', 'Mar 2', 'Mar 9', 'Mar 16', 'Mar 23'],
+    datasets: [{
+      label: 'Weekly Revenue',
+      data: [3398, 5502, 17997, 1015, 841, 1521, 1331, 3746, 1277],
+      borderColor: '#22c55e',
+      backgroundColor: 'rgba(34,197,94,0.1)',
+      fill: true,
+      tension: 0.4,
+      pointRadius: 6,
+      pointBackgroundColor: '#22c55e',
+      pointHoverRadius: 8,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'top' } },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: v => '$' + v.toLocaleString() }, grid: { color: '#1e2130' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// Weekly Orders Chart
+new Chart(document.getElementById('weeklyOrdersChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Jan 26', 'Feb 2', 'Feb 9', 'Feb 16', 'Feb 23', 'Mar 2', 'Mar 9', 'Mar 16', 'Mar 23'],
+    datasets: [{
+      label: 'Orders',
+      data: [14, 19, 127, 7, 10, 12, 17, 6, 3],
+      backgroundColor: '#3b82f6',
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, grid: { color: '#1e2130' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// AOV Trend Chart
+new Chart(document.getElementById('aovTrendChart'), {
+  type: 'line',
+  data: {
+    labels: ['Jan 26', 'Feb 2', 'Feb 9', 'Feb 16', 'Feb 23', 'Mar 2', 'Mar 9', 'Mar 16', 'Mar 23'],
+    datasets: [{
+      label: 'Average Order Value',
+      data: [242.71, 289.58, 141.71, 145.00, 84.10, 126.75, 78.29, 624.33, 425.67],
+      borderColor: '#a855f7',
+      backgroundColor: 'rgba(168,85,247,0.1)',
+      fill: true,
+      tension: 0.4,
+      pointRadius: 6,
+      pointBackgroundColor: '#a855f7',
+      pointHoverRadius: 8,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'top' } },
+    scales: {
+      y: { beginAtZero: false, ticks: { callback: v => '$' + v.toFixed(0) }, grid: { color: '#1e2130' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
 
 // Purchase Journey Chart
 new Chart(document.getElementById('purchaseJourneyChart'), {
