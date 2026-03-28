@@ -241,7 +241,7 @@
 
   <!-- Tabs Navigation -->
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('tracker')">📊 Weekly Tracker</button>
+    <button class="tab active" onclick="switchTab('tracker')">&#128202; Weekly Tracker</button>
     <button class="tab" onclick="switchTab('funnel')">Conversion Funnel</button>
     <button class="tab" onclick="switchTab('traffic')">Traffic & Channels</button>
     <button class="tab" onclick="switchTab('products')">Product Performance</button>
@@ -254,7 +254,7 @@
   <!-- TAB 0: Weekly Tracker (LIVE Shopify Data) -->
   <div id="tab-tracker" class="tab-content active">
     <div id="tracker-status" style="margin-bottom:24px; padding:16px; background:rgba(34,197,94,0.1); border:1px solid var(--green); border-radius:12px;">
-      <span style="color:var(--green); font-weight:600;">📊 Loading live data from Google Sheets...</span>
+      <span style="color:var(--green); font-weight:600;">&#128202; Loading live data from data.json...</span>
     </div>
 
     <!-- KPI Summary Cards -->
@@ -313,7 +313,7 @@
     <div style="background:rgba(250,204,21,0.08); border:1px solid var(--accent); border-radius:12px; padding:24px; margin-bottom:32px;">
       <h4 style="margin-bottom:12px; color:var(--accent); font-size:1.1rem;">How This Works</h4>
       <p style="color:var(--text-muted); line-height:1.6;">
-        This tracker pulls <strong style="color:var(--accent);">live data from Google Sheets</strong> every time you load the page. The sheet is updated weekly with Online Store order data from Shopify (eBay/Marketplace orders excluded). Charts and KPIs above auto-calculate from the latest data.
+        This tracker pulls <strong style="color:var(--accent);">live data from data.json</strong> every time you load the page. To update, edit the data.json file in the GitHub repo with new weekly Online Store numbers. Charts and KPIs auto-calculate from whatever data is in the file.
       </p>
     </div>
   </div>
@@ -752,32 +752,14 @@ function switchTab(name) {
   event.target.classList.add('active');
 }
 
-// Google Sheet CSV URL — published to web
-const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1uNRrTVOuc5XkfuGk_TNnNqlDChmIPzLMJ38Yh4G7T-E/gviz/tq?tqx=out:csv';
-
-function parseCSV(csv) {
-  const lines = csv.trim().split('\n');
-  const rows = [];
-  for (let i = 1; i < lines.length; i++) {
-    const cols = lines[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
-    if (!cols || cols.length < 6) continue;
-    const clean = cols.map(c => c.replace(/^"|"$/g, '').trim());
-    rows.push({
-      week: clean[0], label: clean[1],
-      revenue: parseFloat(clean[2]) || 0, orders: parseInt(clean[3]) || 0,
-      items: parseInt(clean[4]) || 0, aov: parseFloat(clean[5]) || 0
-    });
-  }
-  return rows;
-}
-
+// Fetch live data from data.json in the same GitHub repo (no CORS, no public sheets)
 async function fetchWeeklyData() {
   try {
-    const res = await fetch(SHEET_CSV_URL);
-    if (!res.ok) throw new Error('Sheet fetch failed: ' + res.status);
-    return parseCSV(await res.text());
+    const res = await fetch('data.json?t=' + Date.now());
+    if (!res.ok) throw new Error('Fetch failed: ' + res.status);
+    return await res.json();
   } catch (err) {
-    console.error('Sheet fetch error:', err);
+    console.error('Data fetch error:', err);
     return null;
   }
 }
@@ -810,10 +792,10 @@ function initTrackerCharts(data) {
   // Update status bar
   const now = new Date();
   document.getElementById('tracker-status').innerHTML =
-    '<span style="color:var(--green); font-weight:600;">📊 Live Data — Last refreshed: ' +
+    '<span style="color:var(--green); font-weight:600;">&#128202; Live Data — Last refreshed: ' +
     now.toLocaleDateString('en-AU', {day:'numeric',month:'short',year:'numeric'}) +
     ' at ' + now.toLocaleTimeString('en-AU', {hour:'2-digit',minute:'2-digit'}) +
-    ' — Source: Google Sheets</span>';
+    ' — Source: data.json</span>';
 
   // Update insight
   const avgRev = revenues.reduce((a,b) => a+b, 0) / revenues.length;
@@ -880,7 +862,7 @@ Chart.defaults.color = '#9ca3af';
 Chart.defaults.borderColor = '#2a2e3d';
 Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 
-// Fetch live data from Google Sheet
+// Fetch live data from data.json
 const weeklyData = await fetchWeeklyData();
 if (weeklyData && weeklyData.length > 0) {
   updateTrackerKPIs(weeklyData);
@@ -888,7 +870,7 @@ if (weeklyData && weeklyData.length > 0) {
 } else {
   // Fallback: show error in status bar
   document.getElementById('tracker-status').innerHTML =
-    '<span style="color:var(--red); font-weight:600;">⚠️ Could not load live data. Make sure the Google Sheet is published to web.</span>';
+    '<span style="color:var(--red); font-weight:600;">⚠️ Could not load live data. Make sure data.json exists in the repo.</span>';
 }
 
 // Purchase Journey Chart
