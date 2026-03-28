@@ -3,56 +3,56 @@
     {
       "id": "free-shipping-500",
       "name": "Free Shipping → $500",
-      "implemented": "2026-03-21",
+      "implemented": "2026-03-28",
       "category": "conversion",
       "description": "Raised free shipping threshold from $200 to $500 to push higher AOV"
     },
     {
       "id": "cart-recovery-emails",
       "name": "Cart Recovery Emails",
-      "implemented": "2026-03-21",
+      "implemented": "2026-03-28",
       "category": "retention",
       "description": "3-email abandoned cart sequence: 1hr reminder, 6hr social proof, 24hr urgency + $10 off"
     },
     {
       "id": "exit-intent-popup",
       "name": "Exit Intent Popup",
-      "implemented": "2026-03-21",
+      "implemented": "2026-03-28",
       "category": "conversion",
       "description": "Exit intent popup with $10 discount code to capture leaving visitors"
     },
     {
       "id": "google-ads-restructure",
       "name": "Google Ads Restructure",
-      "implemented": "2026-03-21",
+      "implemented": "2026-03-28",
       "category": "traffic",
       "description": "Paused zero-converting products (OP13, PSA8), redirected spend to collections + YGO"
     },
     {
       "id": "abandoned-checkout-flow",
       "name": "Abandoned Checkout Flow",
-      "implemented": "2026-03-21",
+      "implemented": "2026-03-28",
       "category": "conversion",
       "description": "Optimised Shopify abandoned checkout emails with timing + copy improvements"
     },
     {
       "id": "instagram-links",
       "name": "Instagram Links on Site",
-      "implemented": "2026-03-21",
+      "implemented": "2026-03-28",
       "category": "traffic",
       "description": "Added Instagram social links to footer + header for cross-channel traffic"
     },
     {
       "id": "loyalty-promotion",
       "name": "Loyalty Program Promoted",
-      "implemented": "2026-03-21",
+      "implemented": "2026-03-28",
       "category": "retention",
       "description": "Made Appstle loyalty points more prominent on product pages"
     }
   ],
   "baseline": {
-    "period": "Jan 12 – Mar 16 (pre-strategy)",
-    "weeks": 10,
+    "period": "Jan 12 – Mar 23 (pre-strategy)",
+    "weeks": 11,
     "shopify": {
       "avg_weekly_revenue": 916.54,
       "avg_weekly_orders": 3.7,
@@ -145,8 +145,7 @@
     {
       "week": "2026-03-23",
       "label": "Mar 23",
-      "strategies_active": true,
-      "notes": "First full week with all strategies active",
+      "strategies_active": false,
       "shopify": { "revenue": 2261.00, "orders": 5, "items": 15, "aov": 452.20, "returns": 0 },
       "ga4": { "sessions": null, "conversion_rate": null, "engagement_rate": null, "organic_sessions": null, "paid_sessions": null, "add_to_cart_rate": null, "checkout_completion_rate": null }
     }
