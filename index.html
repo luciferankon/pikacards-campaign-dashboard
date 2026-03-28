@@ -253,47 +253,47 @@
 
   <!-- TAB 0: Weekly Tracker (LIVE Shopify Data) -->
   <div id="tab-tracker" class="tab-content active">
-    <div style="margin-bottom:24px; padding:16px; background:rgba(34,197,94,0.1); border:1px solid var(--green); border-radius:12px;">
-      <span style="color:var(--green); font-weight:600;">📊 Last Updated: March 28, 2026 — Live Shopify Data</span>
+    <div id="tracker-status" style="margin-bottom:24px; padding:16px; background:rgba(34,197,94,0.1); border:1px solid var(--green); border-radius:12px;">
+      <span style="color:var(--green); font-weight:600;">📊 Loading live data from Google Sheets...</span>
     </div>
 
     <!-- KPI Summary Cards -->
-    <div class="section-title">90-Day Performance Summary</div>
+    <div class="section-title">Online Store Performance Summary</div>
     <div class="kpi-grid">
       <div class="kpi-card">
-        <div class="label">Total 90-Day Revenue</div>
-        <div class="value" style="color:var(--accent)">$36,628</div>
-        <div class="sub neutral">All platforms</div>
+        <div class="label">Total Revenue</div>
+        <div class="value" style="color:var(--accent)" id="kpi-revenue">—</div>
+        <div class="sub neutral" id="kpi-revenue-sub">Online Store only</div>
       </div>
       <div class="kpi-card">
         <div class="label">Total Orders</div>
-        <div class="value" style="color:var(--blue)">215</div>
-        <div class="sub neutral"><span style="color:var(--green);">↑ +12</span> vs last week</div>
+        <div class="value" style="color:var(--blue)" id="kpi-orders">—</div>
+        <div class="sub neutral" id="kpi-orders-sub">Loading...</div>
       </div>
       <div class="kpi-card">
         <div class="label">Avg Order Value</div>
-        <div class="value" style="color:var(--purple)">$170</div>
-        <div class="sub neutral"><span style="color:var(--green);">↑ +$45</span> vs last week</div>
-      </div>
-      <div class="kpi-card">
-        <div class="label">Unique Buyers</div>
-        <div class="value" style="color:var(--cyan)">182</div>
-        <div class="sub neutral">84.6% first-time buyers</div>
+        <div class="value" style="color:var(--purple)" id="kpi-aov">—</div>
+        <div class="sub neutral" id="kpi-aov-sub">Loading...</div>
       </div>
       <div class="kpi-card">
         <div class="label">Best Week</div>
-        <div class="value" style="color:var(--green)">$17,997</div>
-        <div class="sub neutral">Feb 9 (Mega Dream launch)</div>
+        <div class="value" style="color:var(--green)" id="kpi-best">—</div>
+        <div class="sub neutral" id="kpi-best-sub">Loading...</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">Latest Week</div>
+        <div class="value" style="color:var(--cyan)" id="kpi-latest">—</div>
+        <div class="sub neutral" id="kpi-latest-sub">Loading...</div>
       </div>
     </div>
 
     <!-- Charts Grid -->
     <div class="chart-grid">
       <div class="chart-card" style="grid-column: span 2;">
-        <h3>Weekly Revenue Trend</h3>
+        <h3>Weekly Revenue Trend (Online Store)</h3>
         <canvas id="weeklyRevenueChart"></canvas>
-        <div class="insight">
-          <strong>Feb 9 spike ($17,997):</strong> Mega Dream ex M2a launch. Excluding this outlier, average weekly revenue is ~$2,200. Focus on launch strategy for upcoming sets.
+        <div class="insight" id="revenue-insight">
+          <strong>Loading chart data...</strong>
         </div>
       </div>
     </div>
@@ -309,90 +309,11 @@
       </div>
     </div>
 
-    <!-- Top Products Table -->
-    <div style="margin-bottom:32px;">
-      <div class="section-title">Top Products (90 Days)</div>
-      <div style="overflow-x:auto;">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Revenue</th>
-              <th>Units Sold</th>
-              <th>% of Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="font-weight:600;">Mega Dream ex M2a</td>
-              <td><span style="color:var(--green); font-weight:600;">$15,820</span></td>
-              <td>129</td>
-              <td><span class="badge star">43.2%</span></td>
-            </tr>
-            <tr>
-              <td>One Piece Extra Booster Heroines EB-03</td>
-              <td>$2,970</td>
-              <td>22</td>
-              <td>8.1%</td>
-            </tr>
-            <tr>
-              <td>YGO Limit Over Heroes</td>
-              <td>$2,570</td>
-              <td>15</td>
-              <td>7.0%</td>
-            </tr>
-            <tr>
-              <td>Pokemon Terastal Festival EX</td>
-              <td>$2,270</td>
-              <td>15</td>
-              <td>6.2%</td>
-            </tr>
-            <tr>
-              <td>Pokémon Inferno X Booster Box M2</td>
-              <td>$1,895</td>
-              <td>14</td>
-              <td>5.2%</td>
-            </tr>
-            <tr>
-              <td>Pokemon Mega Charizard UPC</td>
-              <td>$1,395</td>
-              <td>5</td>
-              <td>3.8%</td>
-            </tr>
-            <tr>
-              <td>YGO Limit Over Rivals</td>
-              <td>$1,158</td>
-              <td>7</td>
-              <td>3.2%</td>
-            </tr>
-            <tr>
-              <td>Pokemon Prismatic Evolutions ETB</td>
-              <td>$975</td>
-              <td>5</td>
-              <td>2.7%</td>
-            </tr>
-            <tr>
-              <td>Pokemon Mega Start Deck 100</td>
-              <td>$967</td>
-              <td>29</td>
-              <td>2.6%</td>
-            </tr>
-            <tr>
-              <td>One Piece EB-04 Egghead Crisis</td>
-              <td>$798</td>
-              <td>7</td>
-              <td>2.2%</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
     <!-- Key Insight Box -->
     <div style="background:rgba(250,204,21,0.08); border:1px solid var(--accent); border-radius:12px; padding:24px; margin-bottom:32px;">
-      <h4 style="margin-bottom:12px; color:var(--accent); font-size:1.1rem;">Key Insight: Launch Hype Matters</h4>
+      <h4 style="margin-bottom:12px; color:var(--accent); font-size:1.1rem;">How This Works</h4>
       <p style="color:var(--text-muted); line-height:1.6;">
-        The Mega Dream ex M2a launch (Feb 9 week) drove <strong style="color:var(--accent);">43% of all revenue</strong> in just one week. Excluding that spike, average weekly revenue is ~$2,200. The team's ability to execute product launches and create hype around new sets is your strongest growth lever. Focus on replicating this launch strategy for upcoming Pokemon and Yu-Gi-Oh! releases.
+        This tracker pulls <strong style="color:var(--accent);">live data from Google Sheets</strong> every time you load the page. The sheet is updated weekly with Online Store order data from Shopify (eBay/Marketplace orders excluded). Charts and KPIs above auto-calculate from the latest data.
       </p>
     </div>
   </div>
@@ -831,87 +752,144 @@ function switchTab(name) {
   event.target.classList.add('active');
 }
 
-function initCharts() {
+// Google Sheet CSV URL — published to web
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1uNRrTVOuc5XkfuGk_TNnNqlDChmIPzLMJ38Yh4G7T-E/gviz/tq?tqx=out:csv';
+
+function parseCSV(csv) {
+  const lines = csv.trim().split('\n');
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
+    if (!cols || cols.length < 6) continue;
+    const clean = cols.map(c => c.replace(/^"|"$/g, '').trim());
+    rows.push({
+      week: clean[0], label: clean[1],
+      revenue: parseFloat(clean[2]) || 0, orders: parseInt(clean[3]) || 0,
+      items: parseInt(clean[4]) || 0, aov: parseFloat(clean[5]) || 0
+    });
+  }
+  return rows;
+}
+
+async function fetchWeeklyData() {
+  try {
+    const res = await fetch(SHEET_CSV_URL);
+    if (!res.ok) throw new Error('Sheet fetch failed: ' + res.status);
+    return parseCSV(await res.text());
+  } catch (err) {
+    console.error('Sheet fetch error:', err);
+    return null;
+  }
+}
+
+function updateTrackerKPIs(data) {
+  const totalRev = data.reduce((s, r) => s + r.revenue, 0);
+  const totalOrders = data.reduce((s, r) => s + r.orders, 0);
+  const avgAOV = totalOrders > 0 ? totalRev / totalOrders : 0;
+  const best = data.reduce((b, r) => r.revenue > b.revenue ? r : b, data[0]);
+  const latest = data[data.length - 1];
+
+  document.getElementById('kpi-revenue').textContent = '$' + totalRev.toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0});
+  document.getElementById('kpi-revenue-sub').textContent = data.length + ' weeks — Online Store only';
+  document.getElementById('kpi-orders').textContent = totalOrders;
+  document.getElementById('kpi-orders-sub').textContent = (totalOrders / data.length).toFixed(1) + ' orders/week avg';
+  document.getElementById('kpi-aov').textContent = '$' + avgAOV.toFixed(0);
+  document.getElementById('kpi-aov-sub').textContent = '$' + totalRev.toLocaleString() + ' / ' + totalOrders + ' orders';
+  document.getElementById('kpi-best').textContent = '$' + best.revenue.toLocaleString();
+  document.getElementById('kpi-best-sub').textContent = best.label + ' (' + best.orders + ' orders)';
+  document.getElementById('kpi-latest').textContent = '$' + latest.revenue.toLocaleString();
+  document.getElementById('kpi-latest-sub').textContent = latest.label + ' (' + latest.orders + ' orders, $' + latest.aov.toFixed(0) + ' AOV)';
+}
+
+function initTrackerCharts(data) {
+  const labels = data.map(r => r.label);
+  const revenues = data.map(r => r.revenue);
+  const orders = data.map(r => r.orders);
+  const aovs = data.map(r => r.aov);
+
+  // Update status bar
+  const now = new Date();
+  document.getElementById('tracker-status').innerHTML =
+    '<span style="color:var(--green); font-weight:600;">📊 Live Data — Last refreshed: ' +
+    now.toLocaleDateString('en-AU', {day:'numeric',month:'short',year:'numeric'}) +
+    ' at ' + now.toLocaleTimeString('en-AU', {hour:'2-digit',minute:'2-digit'}) +
+    ' — Source: Google Sheets</span>';
+
+  // Update insight
+  const avgRev = revenues.reduce((a,b) => a+b, 0) / revenues.length;
+  const maxRev = Math.max(...revenues);
+  const maxIdx = revenues.indexOf(maxRev);
+  document.getElementById('revenue-insight').innerHTML =
+    '<strong>Best week: ' + labels[maxIdx] + ' ($' + maxRev.toLocaleString() + ')</strong> — ' +
+    'Average weekly revenue: $' + avgRev.toFixed(0) + '. Focus on launch strategy for upcoming sets to replicate peak performance.';
+
+  new Chart(document.getElementById('weeklyRevenueChart'), {
+    type: 'line',
+    data: { labels, datasets: [{
+      label: 'Weekly Revenue (Online Store)',
+      data: revenues,
+      borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.1)',
+      fill: true, tension: 0.4, pointRadius: 6,
+      pointBackgroundColor: '#22c55e', pointHoverRadius: 8,
+    }]},
+    options: {
+      responsive: true, plugins: { legend: { position: 'top' } },
+      scales: {
+        y: { beginAtZero: true, ticks: { callback: v => '$' + v.toLocaleString() }, grid: { color: '#1e2130' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  new Chart(document.getElementById('weeklyOrdersChart'), {
+    type: 'bar',
+    data: { labels, datasets: [{
+      label: 'Orders', data: orders,
+      backgroundColor: '#3b82f6', borderRadius: 6,
+    }]},
+    options: {
+      responsive: true, plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: '#1e2130' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  new Chart(document.getElementById('aovTrendChart'), {
+    type: 'line',
+    data: { labels, datasets: [{
+      label: 'Average Order Value', data: aovs,
+      borderColor: '#a855f7', backgroundColor: 'rgba(168,85,247,0.1)',
+      fill: true, tension: 0.4, pointRadius: 6,
+      pointBackgroundColor: '#a855f7', pointHoverRadius: 8,
+    }]},
+    options: {
+      responsive: true, plugins: { legend: { position: 'top' } },
+      scales: {
+        y: { beginAtZero: false, ticks: { callback: v => '$' + v.toFixed(0) }, grid: { color: '#1e2130' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+async function initCharts() {
 // Chart defaults
 Chart.defaults.color = '#9ca3af';
 Chart.defaults.borderColor = '#2a2e3d';
 Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 
-// Weekly Tracker - Weekly Revenue Chart
-new Chart(document.getElementById('weeklyRevenueChart'), {
-  type: 'line',
-  data: {
-    labels: ['Jan 26', 'Feb 2', 'Feb 9', 'Feb 16', 'Feb 23', 'Mar 2', 'Mar 9', 'Mar 16', 'Mar 23'],
-    datasets: [{
-      label: 'Weekly Revenue',
-      data: [3398, 5502, 17997, 1015, 841, 1521, 1331, 3746, 1277],
-      borderColor: '#22c55e',
-      backgroundColor: 'rgba(34,197,94,0.1)',
-      fill: true,
-      tension: 0.4,
-      pointRadius: 6,
-      pointBackgroundColor: '#22c55e',
-      pointHoverRadius: 8,
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: { legend: { position: 'top' } },
-    scales: {
-      y: { beginAtZero: true, ticks: { callback: v => '$' + v.toLocaleString() }, grid: { color: '#1e2130' } },
-      x: { grid: { display: false } }
-    }
-  }
-});
-
-// Weekly Orders Chart
-new Chart(document.getElementById('weeklyOrdersChart'), {
-  type: 'bar',
-  data: {
-    labels: ['Jan 26', 'Feb 2', 'Feb 9', 'Feb 16', 'Feb 23', 'Mar 2', 'Mar 9', 'Mar 16', 'Mar 23'],
-    datasets: [{
-      label: 'Orders',
-      data: [14, 19, 127, 7, 10, 12, 17, 6, 3],
-      backgroundColor: '#3b82f6',
-      borderRadius: 6,
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: { legend: { display: false } },
-    scales: {
-      y: { beginAtZero: true, grid: { color: '#1e2130' } },
-      x: { grid: { display: false } }
-    }
-  }
-});
-
-// AOV Trend Chart
-new Chart(document.getElementById('aovTrendChart'), {
-  type: 'line',
-  data: {
-    labels: ['Jan 26', 'Feb 2', 'Feb 9', 'Feb 16', 'Feb 23', 'Mar 2', 'Mar 9', 'Mar 16', 'Mar 23'],
-    datasets: [{
-      label: 'Average Order Value',
-      data: [242.71, 289.58, 141.71, 145.00, 84.10, 126.75, 78.29, 624.33, 425.67],
-      borderColor: '#a855f7',
-      backgroundColor: 'rgba(168,85,247,0.1)',
-      fill: true,
-      tension: 0.4,
-      pointRadius: 6,
-      pointBackgroundColor: '#a855f7',
-      pointHoverRadius: 8,
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: { legend: { position: 'top' } },
-    scales: {
-      y: { beginAtZero: false, ticks: { callback: v => '$' + v.toFixed(0) }, grid: { color: '#1e2130' } },
-      x: { grid: { display: false } }
-    }
-  }
-});
+// Fetch live data from Google Sheet
+const weeklyData = await fetchWeeklyData();
+if (weeklyData && weeklyData.length > 0) {
+  updateTrackerKPIs(weeklyData);
+  initTrackerCharts(weeklyData);
+} else {
+  // Fallback: show error in status bar
+  document.getElementById('tracker-status').innerHTML =
+    '<span style="color:var(--red); font-weight:600;">⚠️ Could not load live data. Make sure the Google Sheet is published to web.</span>';
+}
 
 // Purchase Journey Chart
 new Chart(document.getElementById('purchaseJourneyChart'), {
