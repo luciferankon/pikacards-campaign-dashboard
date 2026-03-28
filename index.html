@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pikacards Campaign Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  /* Login Screen */
+  #login-screen {
+    display:flex; align-items:center; justify-content:center;
+    min-height:100vh; background:#0f1117;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  .login-box {
+    background:#1a1d27; border:1px solid #2a2e3d; border-radius:16px;
+    padding:48px 40px; text-align:center; max-width:400px; width:90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .login-box .logo { font-size:2rem; font-weight:800; color:#facc15; margin-bottom:8px; }
+  .login-box .login-subtitle { color:#9ca3af; font-size:0.9rem; margin-bottom:32px; }
+  .login-box input[type="password"] {
+    width:100%; padding:14px 18px; border-radius:10px;
+    border:1px solid #2a2e3d; background:#0f1117; color:#e4e4e7;
+    font-size:1rem; outline:none; transition:border 0.2s;
+    margin-bottom:16px;
+  }
+  .login-box input[type="password"]:focus { border-color:#facc15; }
+  .login-box input[type="password"]::placeholder { color:#6b7280; }
+  .login-box button {
+    width:100%; padding:14px; border-radius:10px; border:none;
+    background:#facc15; color:#0f1117; font-size:1rem; font-weight:700;
+    cursor:pointer; transition:background 0.2s;
+  }
+  .login-box button:hover { background:#eab308; }
+  .login-error { color:#ef4444; font-size:0.85rem; margin-top:12px; display:none; }
+  #dashboard-content { display:none; }
+
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d27;
+    --card-hover: #22263a;
+    --border: #2a2e3d;
+    --text: #e4e4e7;
+    --text-muted: #9ca3af;
+    --accent: #facc15;
+    --red: #ef4444;
+    --green: #22c55e;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --orange: #f97316;
+    --cyan: #06b6d4;
+    --pink: #ec4899;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height:1.6; }
+  .container { max-width:1400px; margin:0 auto; padding:24px; }
+
+  /* Header */
+  .header { text-align:center; padding:40px 20px 32px; border-bottom:1px solid var(--border); margin-bottom:32px; }
+  .header h1 { font-size:2.2rem; font-weight:700; margin-bottom:8px; }
+  .header h1 span { color:var(--accent); }
+  .header .subtitle { color:var(--text-muted); font-size:1rem; }
+  .header .meta { display:flex; justify-content:center; gap:24px; margin-top:16px; flex-wrap:wrap; }
+  .header .meta span { background:var(--card); padding:6px 16px; border-radius:20px; font-size:0.85rem; border:1px solid var(--border); }
+
+  /* Section titles */
+  .section-title { font-size:1.4rem; font-weight:700; margin:40px 0 20px; padding-bottom:10px; border-bottom:2px solid var(--accent); display:inline-block; }
+
+  /* KPI Cards */
+  .kpi-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:32px; }
+  .kpi-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; text-align:center; transition: transform 0.2s; }
+  .kpi-card:hover { transform:translateY(-2px); background:var(--card-hover); }
+  .kpi-card .label { font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px; }
+  .kpi-card .value { font-size:2rem; font-weight:800; }
+  .kpi-card .sub { font-size:0.75rem; margin-top:6px; }
+  .kpi-card .target { color:var(--green); }
+  .kpi-card .bad { color:var(--red); }
+  .kpi-card .neutral { color:var(--text-muted); }
+
+  /* Chart containers */
+  .chart-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:24px; margin-bottom:32px; }
+  .chart-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:24px; }
+  .chart-card h3 { font-size:1rem; margin-bottom:16px; color:var(--text); }
+  .chart-card .insight { background:rgba(250,204,21,0.08); border-left:3px solid var(--accent); padding:12px 16px; border-radius:0 8px 8px 0; margin-top:16px; font-size:0.85rem; color:var(--text-muted); }
+  .chart-card .insight strong { color:var(--accent); }
+
+  /* Funnel */
+  .funnel-container { margin-bottom:32px; }
+  .funnel { display:flex; flex-direction:column; gap:0; align-items:center; }
+  .funnel-step { position:relative; text-align:center; padding:18px 24px; color:white; font-weight:600; border-radius:8px; margin-bottom:4px; transition: transform 0.2s; }
+  .funnel-step:hover { transform: scale(1.02); }
+  .funnel-step .funnel-label { font-size:0.95rem; }
+  .funnel-step .funnel-num { font-size:1.5rem; font-weight:800; }
+  .funnel-step .funnel-pct { font-size:0.8rem; opacity:0.85; }
+  .funnel-arrow { color:var(--red); font-size:0.8rem; font-weight:700; margin:2px 0; }
+
+  /* Problem cards */
+  .problems-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(350px, 1fr)); gap:16px; margin-bottom:32px; }
+  .problem-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:24px; position:relative; overflow:hidden; }
+  .problem-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; }
+  .problem-card.critical::before { background:var(--red); }
+  .problem-card.high::before { background:var(--orange); }
+  .problem-card.medium::before { background:var(--accent); }
+  .problem-card .problem-num { font-size:2.5rem; font-weight:900; opacity:0.15; position:absolute; top:8px; right:16px; }
+  .problem-card h4 { font-size:1rem; margin-bottom:8px; }
+  .problem-card .evidence { font-size:0.85rem; color:var(--text-muted); margin-bottom:12px; }
+  .problem-card .impact { font-size:0.85rem; padding:8px 12px; border-radius:8px; background:rgba(239,68,68,0.1); color:var(--red); }
+  .problem-card .impact.positive { background:rgba(34,197,94,0.1); color:var(--green); }
+
+  /* Product table */
+  .data-table { width:100%; border-collapse:collapse; font-size:0.85rem; }
+  .data-table th { text-align:left; padding:12px 16px; background:rgba(255,255,255,0.03); color:var(--text-muted); font-weight:600; text-transform:uppercase; font-size:0.75rem; letter-spacing:0.05em; border-bottom:1px solid var(--border); }
+  .data-table td { padding:12px 16px; border-bottom:1px solid var(--border); }
+  .data-table tr:hover { background:rgba(255,255,255,0.02); }
+  .data-table .bar-cell { position:relative; }
+  .data-table .bar { height:6px; border-radius:3px; background:var(--blue); display:block; margin-top:4px; }
+  .badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:600; }
+  .badge.good { background:rgba(34,197,94,0.15); color:var(--green); }
+  .badge.bad { background:rgba(239,68,68,0.15); color:var(--red); }
+  .badge.warn { background:rgba(249,115,22,0.15); color:var(--orange); }
+  .badge.star { background:rgba(250,204,21,0.15); color:var(--accent); }
+
+  /* Timeline / Action items */
+  .timeline { position:relative; padding-left:32px; }
+  .timeline::before { content:''; position:absolute; left:11px; top:0; bottom:0; width:2px; background:var(--border); }
+  .timeline-item { position:relative; margin-bottom:24px; }
+  .timeline-item::before { content:''; position:absolute; left:-26px; top:6px; width:12px; height:12px; border-radius:50%; border:2px solid var(--accent); background:var(--bg); }
+  .timeline-item.done::before { background:var(--green); border-color:var(--green); }
+  .timeline-item .day-label { font-size:0.75rem; color:var(--accent); font-weight:700; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:4px; }
+  .timeline-item h4 { font-size:0.95rem; margin-bottom:4px; }
+  .timeline-item p { font-size:0.85rem; color:var(--text-muted); }
+
+  /* Metrics target table */
+  .metrics-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:16px; margin-bottom:32px; }
+  .metric-row { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; }
+  .metric-row .metric-name { font-size:0.85rem; font-weight:600; }
+  .metric-row .metric-vals { display:flex; align-items:center; gap:12px; }
+  .metric-row .current { font-size:0.95rem; color:var(--red); font-weight:700; }
+  .metric-row .arrow { color:var(--text-muted); }
+  .metric-row .target-val { font-size:0.95rem; color:var(--green); font-weight:700; }
+
+  /* Channel badges */
+  .channel-pills { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
+  .channel-pill { padding:8px 16px; border-radius:20px; font-size:0.8rem; font-weight:600; border:1px solid var(--border); background:var(--card); }
+  .channel-pill.active { border-color:var(--accent); background:rgba(250,204,21,0.1); color:var(--accent); }
+
+  /* Responsive */
+  @media (max-width:768px) {
+    .chart-grid { grid-template-columns:1fr; }
+    .kpi-grid { grid-template-columns:repeat(2, 1fr); }
+    .problems-grid { grid-template-columns:1fr; }
+    .header h1 { font-size:1.6rem; }
+  }
+
+  /* Tabs */
+  .tabs { display:flex; gap:4px; margin-bottom:24px; background:var(--card); border-radius:12px; padding:4px; border:1px solid var(--border); flex-wrap:wrap; }
+  .tab { padding:10px 20px; border-radius:8px; cursor:pointer; font-size:0.85rem; font-weight:600; color:var(--text-muted); transition:all 0.2s; border:none; background:none; }
+  .tab:hover { color:var(--text); }
+  .tab.active { background:var(--accent); color:var(--bg); }
+  .tab-content { display:none; }
+  .tab-content.active { display:block; }
+</style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="logo">Pikacards</div>
+    <div class="login-subtitle">Campaign Dashboard — Team Access</div>
+    <form onsubmit="checkPassword(event)">
+      <input type="password" id="password-input" placeholder="Enter team password" autocomplete="off" autofocus>
+      <button type="submit">Access Dashboard</button>
+    </form>
+    <div class="login-error" id="login-error">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<!-- Dashboard (hidden until login) -->
+<div id="dashboard-content">
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <h1><span>Pikacards</span> Campaign Dashboard</h1>
+    <p class="subtitle">Data-Driven Growth Plan — Drive Traffic & Boost Conversions</p>
+    <div class="meta">
+      <span>Prepared: March 28, 2026</span>
+      <span>Budget: ~$100 AUD/mo</span>
+      <span>Timeline: 12 Weeks</span>
+      <span>Data: Shopify + GA4 (90 days)</span>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="section-title">Key Performance Indicators</div>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="label">Conversion Rate</div>
+      <div class="value bad">1.29%</div>
+      <div class="sub target">Target: 2.5%+</div>
+    </div>
+    <div class="kpi-card">
+      <div class="label">Weekly Revenue</div>
+      <div class="value" style="color:var(--accent)">$1,600</div>
+      <div class="sub target">Target: $3,000+</div>
+    </div>
+    <div class="kpi-card">
+      <div class="label">Avg Order Value</div>
+      <div class="value" style="color:var(--cyan)">$169</div>
+      <div class="sub neutral">Maintain $169+</div>
+    </div>
+    <div class="kpi-card">
+      <div class="label">Total Sessions (90d)</div>
+      <div class="value" style="color:var(--blue)">2,941</div>
+      <div class="sub neutral">Shopify Analytics</div>
+    </div>
+    <div class="kpi-card">
+      <div class="label">Orders (60d)</div>
+      <div class="value" style="color:var(--purple)">218</div>
+      <div class="sub neutral">$36,783 revenue</div>
+    </div>
+    <div class="kpi-card">
+      <div class="label">Email List</div>
+      <div class="value bad">~0</div>
+      <div class="sub target">Target: 300+</div>
+    </div>
+    <div class="kpi-card">
+      <div class="label">Organic Search Share</div>
+      <div class="value bad">6.5%</div>
+      <div class="sub target">Target: 15%+</div>
+    </div>
+    <div class="kpi-card">
+      <div class="label">Customer Retention</div>
+      <div class="value bad">2.32%</div>
+      <div class="sub target">Target: 5%+</div>
+    </div>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('funnel')">Conversion Funnel</button>
+    <button class="tab" onclick="switchTab('traffic')">Traffic & Channels</button>
+    <button class="tab" onclick="switchTab('products')">Product Performance</button>
+    <button class="tab" onclick="switchTab('problems')">Top 5 Problems</button>
+    <button class="tab" onclick="switchTab('actions')">Action Playbook</button>
+    <button class="tab" onclick="switchTab('targets')">Targets & Metrics</button>
+  </div>
+
+  <!-- TAB 1: Conversion Funnel -->
+  <div id="tab-funnel" class="tab-content active">
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h3>Shopify Conversion Funnel (Last 90 Days)</h3>
+        <div class="funnel">
+          <div class="funnel-step" style="width:100%; background:var(--blue);">
+            <div class="funnel-label">Sessions</div>
+            <div class="funnel-num">2,941</div>
+            <div class="funnel-pct">100%</div>
+          </div>
+          <div class="funnel-arrow">&#9660; 93.7% dropped off</div>
+          <div class="funnel-step" style="width:72%; background:var(--purple);">
+            <div class="funnel-label">Added to Cart</div>
+            <div class="funnel-num">185</div>
+            <div class="funnel-pct">6.29%</div>
+          </div>
+          <div class="funnel-arrow">&#9660; 25.9% abandoned cart</div>
+          <div class="funnel-step" style="width:52%; background:var(--orange);">
+            <div class="funnel-label">Reached Checkout</div>
+            <div class="funnel-num">137</div>
+            <div class="funnel-pct">4.65%</div>
+          </div>
+          <div class="funnel-arrow">&#9660; 72.3% abandoned checkout</div>
+          <div class="funnel-step" style="width:32%; background:var(--red);">
+            <div class="funnel-label">Completed Purchase</div>
+            <div class="funnel-num">38</div>
+            <div class="funnel-pct">1.29%</div>
+          </div>
+        </div>
+        <div class="insight">
+          <strong>The #1 leak:</strong> 91.5% of product viewers leave without adding to cart. Fixing this is worth more than any amount of new traffic.
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>GA4 Purchase Journey by Device</h3>
+        <canvas id="purchaseJourneyChart"></canvas>
+        <div class="insight">
+          <strong>Critical:</strong> 100% of GA4-tracked purchases were on mobile. Zero desktop purchases in 90 days. Your site must be flawless on mobile.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: Traffic & Channels -->
+  <div id="tab-traffic" class="tab-content">
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h3>Traffic Acquisition by Channel (GA4 — 90 Days)</h3>
+        <canvas id="trafficChart"></canvas>
+        <div class="insight">
+          <strong>Paid Shopping is 70% of traffic</strong> but Organic Search has the highest engagement rate (73.33%). SEO is your biggest untapped channel.
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Engagement Rate by Channel</h3>
+        <canvas id="engagementChart"></canvas>
+        <div class="insight">
+          <strong>Paid Social (Instagram ads) has the worst engagement</strong> at 38.24%. Retargeting warm visitors will perform much better than cold ads.
+        </div>
+      </div>
+    </div>
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h3>Landing Page Conversion Rates</h3>
+        <canvas id="landingPageChart"></canvas>
+        <div class="insight">
+          <strong>/collections/sealed-boxes converts at 3.64%</strong> — nearly 3x the site average. Send Google Ads traffic to collection pages, not individual products.
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Top Locations by Sessions</h3>
+        <canvas id="locationChart"></canvas>
+        <div class="insight">
+          <strong>Melbourne + Sydney = 54% of all sessions.</strong> Consider geo-targeted Google Ads for these cities with local messaging.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: Product Performance -->
+  <div id="tab-products" class="tab-content">
+    <div class="chart-grid">
+      <div class="chart-card" style="grid-column: span 2;">
+        <h3>Product Conversion Funnel — Views vs Cart Adds vs Purchases</h3>
+        <canvas id="productFunnelChart"></canvas>
+        <div class="insight">
+          <strong>Yu-Gi-Oh! products convert at 27x the rate of Pokemon.</strong> Limit Over Heroes: $68.71 revenue per view vs ~$2.50 for Pokemon products. This is a massive untapped opportunity.
+        </div>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-bottom:32px;">
+      <h3>Product Performance Table</h3>
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Views</th>
+              <th>Cart Adds</th>
+              <th>Purchased</th>
+              <th>Revenue</th>
+              <th>View→Cart Rate</th>
+              <th>Revenue/View</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>YGO Limit Over Heroes</td>
+              <td>23</td>
+              <td>39</td>
+              <td>14</td>
+              <td>$2,396</td>
+              <td><span class="badge star">170%</span></td>
+              <td><span class="badge star">$104.17</span></td>
+            </tr>
+            <tr>
+              <td>YGO Limit Over Rivals</td>
+              <td>22</td>
+              <td>44</td>
+              <td>4</td>
+              <td>$696</td>
+              <td><span class="badge star">200%</span></td>
+              <td><span class="badge star">$31.64</span></td>
+            </tr>
+            <tr>
+              <td>Mega Start Deck 100</td>
+              <td>89</td>
+              <td>29</td>
+              <td>1</td>
+              <td>$39</td>
+              <td><span class="badge good">32.6%</span></td>
+              <td>$0.44</td>
+            </tr>
+            <tr>
+              <td>Ascended Heroes ETB</td>
+              <td>44</td>
+              <td>8</td>
+              <td>1</td>
+              <td>$180</td>
+              <td><span class="badge good">18.2%</span></td>
+              <td>$4.09</td>
+            </tr>
+            <tr>
+              <td>Ninja Spinner</td>
+              <td>139</td>
+              <td>20</td>
+              <td>1</td>
+              <td>$135</td>
+              <td><span class="badge warn">14.4%</span></td>
+              <td>$0.97</td>
+            </tr>
+            <tr>
+              <td>One Piece OP13</td>
+              <td>152</td>
+              <td>19</td>
+              <td>0</td>
+              <td>$0</td>
+              <td><span class="badge warn">12.5%</span></td>
+              <td><span class="badge bad">$0.00</span></td>
+            </tr>
+            <tr>
+              <td>Mega Dream M2a</td>
+              <td>215</td>
+              <td>25</td>
+              <td>4</td>
+              <td>$500</td>
+              <td><span class="badge warn">11.6%</span></td>
+              <td>$2.33</td>
+            </tr>
+            <tr>
+              <td>Munikis Zero M3</td>
+              <td>81</td>
+              <td>6</td>
+              <td>3</td>
+              <td>$277</td>
+              <td><span class="badge bad">7.4%</span></td>
+              <td>$3.42</td>
+            </tr>
+            <tr>
+              <td>Mega Charizard UPC</td>
+              <td>223</td>
+              <td>6</td>
+              <td>2</td>
+              <td>$570</td>
+              <td><span class="badge bad">2.7%</span></td>
+              <td>$2.56</td>
+            </tr>
+            <tr>
+              <td>Pikachu PSA 8</td>
+              <td>137</td>
+              <td>1</td>
+              <td>1</td>
+              <td>$90</td>
+              <td><span class="badge bad">0.7%</span></td>
+              <td>$0.66</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h3>Revenue by Category</h3>
+        <canvas id="categoryChart"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Revenue per Product View ($/view)</h3>
+        <canvas id="revenuePerViewChart"></canvas>
+        <div class="insight"><strong>Yu-Gi-Oh! generates $68/view</strong> vs $2.50/view for Pokemon. Even a small increase in YGO traffic would massively boost revenue.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: Top 5 Problems -->
+  <div id="tab-problems" class="tab-content">
+    <div class="problems-grid">
+      <div class="problem-card critical">
+        <div class="problem-num">#1</div>
+        <h4>91.5% of Product Viewers Don't Add to Cart</h4>
+        <p class="evidence">904 users viewed products, only 77 added to cart (8.5%). Avg product page engagement: only 14–21 seconds on mobile.</p>
+        <div class="impact positive">Fix potential: +$2,400/quarter (move from 6.3% → 10% add-to-cart rate)</div>
+      </div>
+      <div class="problem-card critical">
+        <div class="problem-num">#2</div>
+        <h4>72.3% of Checkout Starters Don't Complete</h4>
+        <p class="evidence">137 reached checkout, only 38 completed. Likely: shipping costs revealed at checkout, trust concerns, payment friction.</p>
+        <div class="impact positive">Fix potential: +$2,900/quarter (move from 27.7% → 40% completion)</div>
+      </div>
+      <div class="problem-card high">
+        <div class="problem-num">#3</div>
+        <h4>Google Ads Send Traffic to Wrong Pages</h4>
+        <p class="evidence">70% of traffic is Paid Shopping. OP13: 144 sessions, $0 revenue. PSA 8: 107 sessions, $0. /collections/sealed-boxes: 3.64% conv rate.</p>
+        <div class="impact positive">Fix potential: 2x paid conversion by redirecting to collection pages</div>
+      </div>
+      <div class="problem-card high">
+        <div class="problem-num">#4</div>
+        <h4>Zero Organic Search Strategy</h4>
+        <p class="evidence">Organic Search = 73.33% engagement (best channel!) but only 6.5% of traffic. No blog. No content. Zero SEO investment.</p>
+        <div class="impact positive">Fix potential: +$1,500/mo in free organic traffic revenue</div>
+      </div>
+      <div class="problem-card medium">
+        <div class="problem-num">#5</div>
+        <h4>No Email Capture = No Repeat Business</h4>
+        <p class="evidence">Retention dropped to 2.32%. No popup. No abandoned cart emails. 137 abandoned checkouts = ~$23K walked away.</p>
+        <div class="impact positive">Fix potential: +$1,200–$3,400/quarter from cart recovery alone</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 5: Action Playbook -->
+  <div id="tab-actions" class="tab-content">
+    <div class="chart-card" style="margin-bottom:24px;">
+      <h3>Quick Win Playbook — Do In Order</h3>
+      <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:24px;">Each action is backed by a specific data point. Ordered by impact and effort.</p>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="day-label">Day 1 — 5-Minute Fixes</div>
+          <h4>Turn on abandoned cart emails</h4>
+          <p>Recovers 5–15% of 137 abandoned checkouts → $1,200–$3,400 potential</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Add Instagram link to site footer</h4>
+          <p>428 Instagram visitors can't find your social — 97% of social traffic</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Change announcement bar from "$500 free shipping"</h4>
+          <p>$500 threshold is unreachable (AOV = $169). Replace with brand message.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="day-label">Day 2 — 30-Minute Fixes</div>
+          <h4>Lower free shipping threshold to $150–200</h4>
+          <p>Immediately reduces checkout abandonment. Captures avg order ($169).</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Add email popup: "10% off your first order"</h4>
+          <p>Current email list: ~0. Retention: 2.32%. Popup starts list from Day 1.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Write & automate 3-email welcome sequence</h4>
+          <p>Brand story → Best sellers → 10% off. Automated in Shopify Email.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="day-label">Day 3–4 — Google Ads Restructure</div>
+          <h4>Pause ads for 0%-converting products</h4>
+          <p>OP13 (144 sessions, $0), PSA 8 (107 sessions, $0), Munikis ($0) — wasting budget.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Create collection-page-focused campaigns</h4>
+          <p>/collections/sealed-boxes: 3.64% conv vs 0.84% homepage. Send traffic there.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Launch Yu-Gi-Oh! Google Shopping campaign</h4>
+          <p>YGO converts at 27x Pokemon rate — $68/view vs $2.50/view. Huge opportunity.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="day-label">Day 5–7 — Content Engine Launch</div>
+          <h4>Enable Shopify blog + publish first post</h4>
+          <p>Feeds your best channel (Organic Search: 73.33% engagement). Zero content exists.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Batch-film 4 Instagram Reels</h4>
+          <p>Post on Sundays — Monday = 53% of revenue. Pack openings perform best.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Install Meta Pixel</h4>
+          <p>Starts collecting data for retargeting. Launch retargeting ads in Week 4.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h3>12-Week Content Calendar Overview</h3>
+      <canvas id="calendarChart"></canvas>
+    </div>
+  </div>
+
+  <!-- TAB 6: Targets & Metrics -->
+  <div id="tab-targets" class="tab-content">
+    <div class="section-title" style="margin-top:0;">Current → Target (12 Weeks)</div>
+    <div class="metrics-grid">
+      <div class="metric-row">
+        <div class="metric-name">Conversion Rate</div>
+        <div class="metric-vals"><span class="current">1.29%</span><span class="arrow">→</span><span class="target-val">2.5%+</span></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-name">Add-to-Cart Rate</div>
+        <div class="metric-vals"><span class="current">6.29%</span><span class="arrow">→</span><span class="target-val">10%+</span></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-name">Checkout Completion</div>
+        <div class="metric-vals"><span class="current">27.7%</span><span class="arrow">→</span><span class="target-val">40%+</span></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-name">Weekly Revenue</div>
+        <div class="metric-vals"><span class="current">$1,600</span><span class="arrow">→</span><span class="target-val">$3,000+</span></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-name">Weekly Orders</div>
+        <div class="metric-vals"><span class="current">8–17</span><span class="arrow">→</span><span class="target-val">25+</span></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-name">Organic Search Share</div>
+        <div class="metric-vals"><span class="current">6.5%</span><span class="arrow">→</span><span class="target-val">15%+</span></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-name">Email List Size</div>
+        <div class="metric-vals"><span class="current">~0</span><span class="arrow">→</span><span class="target-val">300+</span></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-name">Email-Driven Revenue</div>
+        <div class="metric-vals"><span class="current">$0</span><span class="arrow">→</span><span class="target-val">15%+ of total</span></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-name">Cart Recovery Rate</div>
+        <div class="metric-vals"><span class="current">0%</span><span class="arrow">→</span><span class="target-val">10%+</span></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-name">Customer Retention</div>
+        <div class="metric-vals"><span class="current">2.32%</span><span class="arrow">→</span><span class="target-val">5%+</span></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-name">Blog Organic Traffic</div>
+        <div class="metric-vals"><span class="current">0/mo</span><span class="arrow">→</span><span class="target-val">300+/mo</span></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-name">Revenue Concentration</div>
+        <div class="metric-vals"><span class="current">43% (1 product)</span><span class="arrow">→</span><span class="target-val">&lt;25%</span></div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h3>Expected Revenue Impact Over 12 Weeks</h3>
+      <canvas id="projectionChart"></canvas>
+      <div class="insight"><strong>Conservative estimate:</strong> Fixing the funnel + email + organic growth could take weekly revenue from $1,600 to $3,000+ by Week 12. The biggest gains come from conversion fixes, not more traffic.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Tab switching
+function switchTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function initCharts() {
+// Chart defaults
+Chart.defaults.color = '#9ca3af';
+Chart.defaults.borderColor = '#2a2e3d';
+Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+
+// Purchase Journey Chart
+new Chart(document.getElementById('purchaseJourneyChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Session Start', 'View Product', 'Add to Cart', 'Begin Checkout', 'Purchase'],
+    datasets: [{
+      label: 'Mobile',
+      data: [928, 788, 64, 25, 5],
+      backgroundColor: '#3b82f6',
+      borderRadius: 4,
+    }, {
+      label: 'Desktop',
+      data: [180, 113, 13, 6, 0],
+      backgroundColor: '#a855f7',
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'top' } },
+    scales: { y: { beginAtZero: true, grid: { color: '#1e2130' } }, x: { grid: { display: false } } }
+  }
+});
+
+// Traffic Acquisition Doughnut
+new Chart(document.getElementById('trafficChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Paid Shopping', 'Direct', 'Organic Search', 'Organic Social', 'Paid Social', 'Other'],
+    datasets: [{
+      data: [963, 172, 90, 64, 34, 57],
+      backgroundColor: ['#3b82f6', '#a855f7', '#22c55e', '#ec4899', '#f97316', '#6b7280'],
+      borderWidth: 0,
+    }]
+  },
+  options: {
+    responsive: true,
+    cutout: '60%',
+    plugins: {
+      legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true } }
+    }
+  }
+});
+
+// Engagement Rate Chart
+new Chart(document.getElementById('engagementChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Organic Search', 'Organic Social', 'Paid Shopping', 'Direct', 'Paid Social'],
+    datasets: [{
+      label: 'Engagement Rate',
+      data: [73.33, 60.94, 50.47, 45.35, 38.24],
+      backgroundColor: ['#22c55e', '#ec4899', '#3b82f6', '#a855f7', '#ef4444'],
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' }, grid: { color: '#1e2130' } },
+      y: { grid: { display: false } }
+    }
+  }
+});
+
+// Landing Page Conversion Chart
+new Chart(document.getElementById('landingPageChart'), {
+  type: 'bar',
+  data: {
+    labels: ['/cart', '/collections/sealed-boxes', 'Mega Start Deck', 'Ninja Spinner', 'Mega Charizard UPC', 'Homepage (/)', 'Mega Dream M2a', 'One Piece OP13', 'Pikachu PSA 8'],
+    datasets: [{
+      label: 'Conversion Rate %',
+      data: [6.25, 3.64, 1.56, 1.39, 1.23, 0.84, 0.54, 0, 0],
+      backgroundColor: function(ctx) {
+        const v = ctx.raw;
+        if (v >= 3) return '#22c55e';
+        if (v >= 1) return '#facc15';
+        if (v > 0) return '#f97316';
+        return '#ef4444';
+      },
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { beginAtZero: true, ticks: { callback: v => v + '%' }, grid: { color: '#1e2130' } },
+      y: { grid: { display: false } }
+    }
+  }
+});
+
+// Location Chart
+new Chart(document.getElementById('locationChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Melbourne', 'Sydney', 'Brisbane', 'Iowa (US)', 'Perth'],
+    datasets: [{
+      label: 'Sessions',
+      data: [847, 751, 318, 212, 152],
+      backgroundColor: ['#3b82f6', '#06b6d4', '#a855f7', '#f97316', '#ec4899'],
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: { y: { beginAtZero: true, grid: { color: '#1e2130' } }, x: { grid: { display: false } } }
+  }
+});
+
+// Product Funnel Chart
+new Chart(document.getElementById('productFunnelChart'), {
+  type: 'bar',
+  data: {
+    labels: ['YGO Limit Heroes', 'YGO Limit Rivals', 'Mega Start Deck', 'Mega Dream M2a', 'Ninja Spinner', 'One Piece OP13', 'Ascended Heroes', 'Charizard UPC', 'Munikis M3', 'Pikachu PSA 8'],
+    datasets: [
+      { label: 'Views', data: [23, 22, 89, 215, 139, 152, 44, 223, 81, 137], backgroundColor: '#3b82f6', borderRadius: 4 },
+      { label: 'Cart Adds', data: [39, 44, 29, 25, 20, 19, 8, 6, 6, 1], backgroundColor: '#facc15', borderRadius: 4 },
+      { label: 'Purchased', data: [14, 4, 1, 4, 1, 0, 1, 2, 3, 1], backgroundColor: '#22c55e', borderRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'top' } },
+    scales: { y: { beginAtZero: true, grid: { color: '#1e2130' } }, x: { grid: { display: false } } }
+  }
+});
+
+// Category Pie
+new Chart(document.getElementById('categoryChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Pokemon Sealed Boxes', 'Yu-Gi-Oh!', 'One Piece', 'Singles', 'Graded Cards', 'Other'],
+    datasets: [{
+      data: [26722, 3728, 3095, 2343, 147, 748],
+      backgroundColor: ['#facc15', '#a855f7', '#ef4444', '#3b82f6', '#06b6d4', '#6b7280'],
+      borderWidth: 0,
+    }]
+  },
+  options: {
+    responsive: true,
+    cutout: '60%',
+    plugins: { legend: { position: 'bottom', labels: { padding: 12, usePointStyle: true } } }
+  }
+});
+
+// Revenue per View
+new Chart(document.getElementById('revenuePerViewChart'), {
+  type: 'bar',
+  data: {
+    labels: ['YGO Heroes', 'YGO Rivals', 'Ascended ETB', 'Munikis M3', 'Charizard UPC', 'Dream M2a', 'Ninja Spinner', 'PSA 8', 'Start Deck', 'OP13'],
+    datasets: [{
+      label: '$/view',
+      data: [104.17, 31.64, 4.09, 3.42, 2.56, 2.33, 0.97, 0.66, 0.44, 0],
+      backgroundColor: function(ctx) {
+        const v = ctx.raw;
+        if (v >= 10) return '#22c55e';
+        if (v >= 2) return '#facc15';
+        if (v > 0) return '#f97316';
+        return '#ef4444';
+      },
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { beginAtZero: true, ticks: { callback: v => '$' + v }, grid: { color: '#1e2130' } },
+      y: { grid: { display: false } }
+    }
+  }
+});
+
+// Calendar activity chart
+new Chart(document.getElementById('calendarChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Wk 1', 'Wk 2', 'Wk 3', 'Wk 4', 'Wk 5', 'Wk 6', 'Wk 7', 'Wk 8', 'Wk 9', 'Wk 10', 'Wk 11', 'Wk 12'],
+    datasets: [
+      { label: 'Site Fixes', data: [4, 3, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], backgroundColor: '#ef4444', borderRadius: 4 },
+      { label: 'Blog/SEO', data: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0], backgroundColor: '#22c55e', borderRadius: 4 },
+      { label: 'Instagram', data: [0, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 2], backgroundColor: '#ec4899', borderRadius: 4 },
+      { label: 'Email', data: [3, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], backgroundColor: '#a855f7', borderRadius: 4 },
+      { label: 'Ads', data: [0, 1, 0, 2, 0, 1, 0, 1, 0, 0, 0, 1], backgroundColor: '#f97316', borderRadius: 4 },
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'top' } },
+    scales: {
+      x: { stacked: true, grid: { display: false } },
+      y: { stacked: true, beginAtZero: true, title: { display: true, text: 'Action Items' }, grid: { color: '#1e2130' } }
+    }
+  }
+});
+
+// Revenue Projection Chart
+new Chart(document.getElementById('projectionChart'), {
+  type: 'line',
+  data: {
+    labels: ['Now', 'Wk 2', 'Wk 4', 'Wk 6', 'Wk 8', 'Wk 10', 'Wk 12'],
+    datasets: [{
+      label: 'Projected Weekly Revenue',
+      data: [1600, 1800, 2100, 2400, 2600, 2800, 3200],
+      borderColor: '#22c55e',
+      backgroundColor: 'rgba(34,197,94,0.1)',
+      fill: true,
+      tension: 0.4,
+      pointRadius: 6,
+      pointBackgroundColor: '#22c55e',
+    }, {
+      label: 'Current Baseline',
+      data: [1600, 1600, 1600, 1600, 1600, 1600, 1600],
+      borderColor: '#ef4444',
+      borderDash: [5, 5],
+      pointRadius: 0,
+      fill: false,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'top' } },
+    scales: {
+      y: { beginAtZero: false, min: 1000, ticks: { callback: v => '$' + v }, grid: { color: '#1e2130' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+}
+
+// Password check using SHA-256 hash
+async function checkPassword(e) {
+  e.preventDefault();
+  const pwd = document.getElementById('password-input').value;
+  const encoder = new TextEncoder();
+  const data = encoder.encode(pwd);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+  // Hash of the team password
+  const correctHash = 'cc2d10c54cd0dbcbda23ad6205bb5fca3f3b438b4c5614a41a331174c995f75d';
+
+  if (hashHex === correctHash) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard-content').style.display = 'block';
+    // Initialize charts after dashboard is visible
+    initCharts();
+    // Store session so refresh doesn't require re-login
+    sessionStorage.setItem('pika_auth', '1');
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('password-input').value = '';
+    document.getElementById('password-input').focus();
+  }
+}
+
+// Auto-login if already authenticated in this session
+if (sessionStorage.getItem('pika_auth') === '1') {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('dashboard-content').style.display = 'block';
+  // Need to wait for DOM
+  window.addEventListener('load', initCharts);
+}
+</script>
+</div><!-- end dashboard-content -->
+</body>
+</html>
