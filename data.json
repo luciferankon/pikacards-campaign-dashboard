@@ -1,0 +1,90 @@
+[
+  {
+    "week": "2026-01-12",
+    "label": "Jan 12",
+    "revenue": 553.35,
+    "orders": 4,
+    "items": 6,
+    "aov": 138.34
+  },
+  {
+    "week": "2026-01-19",
+    "label": "Jan 19",
+    "revenue": 470.85,
+    "orders": 3,
+    "items": 11,
+    "aov": 156.95
+  },
+  {
+    "week": "2026-01-26",
+    "label": "Jan 26",
+    "revenue": 892.45,
+    "orders": 5,
+    "items": 10,
+    "aov": 178.49
+  },
+  {
+    "week": "2026-02-02",
+    "label": "Feb 02",
+    "revenue": 1568.99,
+    "orders": 7,
+    "items": 15,
+    "aov": 224.14
+  },
+  {
+    "week": "2026-02-09",
+    "label": "Feb 09",
+    "revenue": 1050.3,
+    "orders": 4,
+    "items": 9,
+    "aov": 262.57
+  },
+  {
+    "week": "2026-02-16",
+    "label": "Feb 16",
+    "revenue": 513,
+    "orders": 1,
+    "items": 3,
+    "aov": 513
+  },
+  {
+    "week": "2026-02-23",
+    "label": "Feb 23",
+    "revenue": 215,
+    "orders": 1,
+    "items": 2,
+    "aov": 215
+  },
+  {
+    "week": "2026-03-02",
+    "label": "Mar 02",
+    "revenue": 624.5,
+    "orders": 4,
+    "items": 4,
+    "aov": 156.12
+  },
+  {
+    "week": "2026-03-09",
+    "label": "Mar 09",
+    "revenue": 654.95,
+    "orders": 4,
+    "items": 6,
+    "aov": 163.74
+  },
+  {
+    "week": "2026-03-16",
+    "label": "Mar 16",
+    "revenue": 2612,
+    "orders": 4,
+    "items": 16,
+    "aov": 653
+  },
+  {
+    "week": "2026-03-23",
+    "label": "Mar 23",
+    "revenue": 2261,
+    "orders": 5,
+    "items": 15,
+    "aov": 452.2
+  }
+]
