@@ -341,6 +341,274 @@ function initTrackerCharts(data) {
   }
 }
 
+// ============================================
+// TARGETS & METRICS TAB
+// ============================================
+
+// 12-week targets (weekly equivalents where applicable)
+const TARGETS = {
+  weekly_revenue: { name: 'Weekly Revenue', target: 1500, unit: '$', baseline: 916, format: v => '$' + v.toLocaleString('en-US',{maximumFractionDigits:0}), key: 'revenue' },
+  orders: { name: 'Orders/Week', target: 6, unit: '', baseline: 3.7, format: v => v.toFixed(1), key: 'orders' },
+  aov: { name: 'Avg Order Value', target: 250, unit: '$', baseline: 248, format: v => '$' + v.toFixed(0), key: 'aov' },
+  items_per_order: { name: 'Items/Order', target: 5, unit: '', baseline: 3.5, format: v => v.toFixed(1), key: 'items_per_order' },
+};
+
+function buildTargetGauges(data) {
+  const container = document.getElementById('target-gauges');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const weeks = data.weeks || [];
+  const lastWeek = weeks.length > 0 ? weeks[weeks.length - 1] : null;
+  const last4 = weeks.slice(-4);
+
+  // Calculate rolling 4-week averages (or whatever weeks we have)
+  const recentRevenue = last4.length > 0 ? last4.reduce((s,w) => s + w.shopify.revenue, 0) / last4.length : 0;
+  const recentOrders = last4.length > 0 ? last4.reduce((s,w) => s + w.shopify.orders, 0) / last4.length : 0;
+  const recentAOV = last4.length > 0 ? last4.reduce((s,w) => s + w.shopify.aov, 0) / last4.length : 0;
+  const recentItems = last4.length > 0 ? last4.reduce((s,w) => s + (w.shopify.items / Math.max(w.shopify.orders,1)), 0) / last4.length : 0;
+
+  // GA4 metrics from baseline (since we don't have weekly GA4 yet)
+  const ga4 = data.baseline?.ga4 || {};
+
+  const gauges = [
+    { name: 'Weekly Revenue (4wk avg)', current: recentRevenue, target: 1500, baseline: data.baseline?.shopify?.avg_weekly_revenue || 916, format: v => '$'+v.toLocaleString('en-US',{maximumFractionDigits:0}), color: 'var(--accent)' },
+    { name: 'Orders/Week (4wk avg)', current: recentOrders, target: 6, baseline: data.baseline?.shopify?.avg_weekly_orders || 3.7, format: v => v.toFixed(1), color: 'var(--blue)' },
+    { name: 'Avg Order Value (4wk avg)', current: recentAOV, target: 250, baseline: data.baseline?.shopify?.avg_aov || 248, format: v => '$'+v.toFixed(0), color: 'var(--purple)' },
+    { name: 'Items/Order (4wk avg)', current: recentItems, target: 5, baseline: 3.5, format: v => v.toFixed(1), color: 'var(--cyan)' },
+    { name: 'GA4 Conversion Rate', current: ga4.avg_conversion_rate || null, target: 2.5, baseline: 1.29, format: v => v.toFixed(2)+'%', color: 'var(--green)', suffix: '%' },
+    { name: 'Checkout Completion', current: ga4.checkout_completion_rate || null, target: 40, baseline: 27.7, format: v => v.toFixed(1)+'%', color: 'var(--orange)', suffix: '%' },
+    { name: 'Organic Search Share', current: ga4.organic_share_pct || null, target: 15, baseline: 6.5, format: v => v.toFixed(1)+'%', color: 'var(--green)', suffix: '%' },
+    { name: 'Monthly Sessions', current: ga4.avg_weekly_sessions ? ga4.avg_weekly_sessions * 4.33 : null, target: 1500, baseline: 980, format: v => v.toFixed(0)+'/mo', color: 'var(--blue)' },
+  ];
+
+  gauges.forEach(g => {
+    const card = document.createElement('div');
+    card.className = 'gauge-card';
+
+    const hasData = g.current !== null && g.current !== undefined;
+    const pctOfTarget = hasData ? Math.min((g.current / g.target) * 100, 100) : 0;
+    const pctFromBaseline = hasData && g.baseline > 0 ? ((g.current - g.baseline) / g.baseline) * 100 : 0;
+
+    let statusClass = 'no-data';
+    let statusText = 'No data';
+    if (hasData) {
+      if (pctOfTarget >= 90) { statusClass = 'on-track'; statusText = 'On Track'; }
+      else if (pctOfTarget >= 60) { statusClass = 'needs-work'; statusText = 'Needs Work'; }
+      else { statusClass = 'behind'; statusText = 'Behind'; }
+    }
+
+    const barColor = statusClass === 'on-track' ? 'var(--green)' :
+                     statusClass === 'needs-work' ? 'var(--orange)' :
+                     statusClass === 'behind' ? 'var(--red)' : 'var(--text-muted)';
+
+    const changeSign = pctFromBaseline >= 0 ? '+' : '';
+    const changeColor = pctFromBaseline >= 0 ? 'var(--green)' : 'var(--red)';
+
+    card.innerHTML = `
+      <div class="gauge-header">
+        <div class="gauge-name">${g.name}</div>
+        <div class="gauge-status ${statusClass}">${statusText}</div>
+      </div>
+      <div class="gauge-values">
+        <div class="gauge-current" style="color:${g.color}">${hasData ? g.format(g.current) : '—'}</div>
+        <div class="gauge-target">Target: ${g.format(g.target)}</div>
+      </div>
+      <div class="gauge-bar-bg">
+        <div class="gauge-bar-fill" style="width:${hasData ? pctOfTarget : 0}%; background:${barColor};"></div>
+      </div>
+      <div class="gauge-detail">
+        Baseline: ${g.format(g.baseline)}${hasData ? ` — <span style="color:${changeColor}">${changeSign}${pctFromBaseline.toFixed(1)}% from baseline</span>` : ''}
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function buildTargetCharts(data) {
+  const weeks = data.weeks || [];
+  const labels = weeks.map(w => w.label);
+  const revenues = weeks.map(w => w.shopify.revenue);
+  const orders = weeks.map(w => w.shopify.orders);
+  const aovs = weeks.map(w => w.shopify.aov);
+
+  // Revenue vs Target chart
+  const revCtx = document.getElementById('revenueTargetChart');
+  if (revCtx) {
+    new Chart(revCtx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Weekly Revenue',
+            data: revenues,
+            backgroundColor: revenues.map(r => r >= 1500 ? '#22c55e' : r >= 1000 ? '#facc15' : '#ef4444'),
+            borderRadius: 6,
+          },
+          {
+            label: 'Target ($1,500/wk)',
+            data: Array(labels.length).fill(1500),
+            type: 'line',
+            borderColor: '#22c55e',
+            borderDash: [5, 5],
+            pointRadius: 0,
+            fill: false,
+          },
+          {
+            label: 'Baseline ($917/wk)',
+            data: Array(labels.length).fill(data.baseline?.shopify?.avg_weekly_revenue || 917),
+            type: 'line',
+            borderColor: '#ef4444',
+            borderDash: [3, 3],
+            pointRadius: 0,
+            fill: false,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'top' } },
+        scales: {
+          y: { beginAtZero: true, ticks: { callback: v => '$' + v.toLocaleString() }, grid: { color: '#1e2130' } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  // AOV Target chart
+  const aovCtx = document.getElementById('aovTargetChart');
+  if (aovCtx) {
+    new Chart(aovCtx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'AOV',
+            data: aovs,
+            borderColor: '#a855f7',
+            backgroundColor: 'rgba(168,85,247,0.1)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 5,
+            pointBackgroundColor: aovs.map(v => v >= 250 ? '#22c55e' : '#f97316'),
+          },
+          {
+            label: 'Target ($250)',
+            data: Array(labels.length).fill(250),
+            borderColor: '#22c55e',
+            borderDash: [5, 5],
+            pointRadius: 0,
+            fill: false,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'top' } },
+        scales: {
+          y: { beginAtZero: false, ticks: { callback: v => '$' + v }, grid: { color: '#1e2130' } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  // Orders Target chart
+  const ordCtx = document.getElementById('ordersTargetChart');
+  if (ordCtx) {
+    new Chart(ordCtx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Orders',
+            data: orders,
+            backgroundColor: orders.map(o => o >= 6 ? '#22c55e' : o >= 4 ? '#facc15' : '#ef4444'),
+            borderRadius: 6,
+          },
+          {
+            label: 'Target (6/wk)',
+            data: Array(labels.length).fill(6),
+            type: 'line',
+            borderColor: '#22c55e',
+            borderDash: [5, 5],
+            pointRadius: 0,
+            fill: false,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'top' } },
+        scales: {
+          y: { beginAtZero: true, grid: { color: '#1e2130' } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }
+}
+
+function buildWeeklyScorecard(data) {
+  const tbody = document.getElementById('scorecard-body');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  const weeks = data.weeks || [];
+  const targets = { revenue: 1500, orders: 6, aov: 250 };
+
+  weeks.forEach(week => {
+    const rev = week.shopify.revenue;
+    const ord = week.shopify.orders;
+    const aov = week.shopify.aov;
+    const items = week.shopify.items;
+    const sessions = week.ga4?.sessions;
+    const cvr = week.ga4?.conversion_rate;
+
+    // Grade: how many targets hit
+    let hits = 0;
+    if (rev >= targets.revenue) hits++;
+    if (ord >= targets.orders) hits++;
+    if (aov >= targets.aov) hits++;
+
+    let grade, gradeColor;
+    if (hits === 3) { grade = 'A'; gradeColor = 'var(--green)'; }
+    else if (hits === 2) { grade = 'B'; gradeColor = 'var(--accent)'; }
+    else if (hits === 1) { grade = 'C'; gradeColor = 'var(--orange)'; }
+    else { grade = 'D'; gradeColor = 'var(--red)'; }
+
+    const revColor = rev >= targets.revenue ? 'color:var(--green)' : rev >= 1000 ? 'color:var(--accent)' : 'color:var(--red)';
+    const ordColor = ord >= targets.orders ? 'color:var(--green)' : ord >= 4 ? 'color:var(--accent)' : 'color:var(--red)';
+    const aovColor = aov >= targets.aov ? 'color:var(--green)' : aov >= 200 ? 'color:var(--accent)' : 'color:var(--red)';
+
+    const revDelta = ((rev - targets.revenue) / targets.revenue * 100).toFixed(0);
+    const revDeltaStr = rev >= targets.revenue
+      ? `<span style="color:var(--green)">+${revDelta}%</span>`
+      : `<span style="color:var(--red)">${revDelta}%</span>`;
+
+    const tr = document.createElement('tr');
+    if (week.strategies_active) {
+      tr.style.background = 'rgba(250,204,21,0.04)';
+    }
+    tr.innerHTML = `
+      <td><strong>${week.label}</strong></td>
+      <td style="${revColor}; font-weight:600;">$${rev.toLocaleString('en-US',{minimumFractionDigits:0})}</td>
+      <td>${revDeltaStr}</td>
+      <td style="${ordColor}; font-weight:600;">${ord}</td>
+      <td style="${aovColor}; font-weight:600;">$${aov.toFixed(0)}</td>
+      <td>${items}</td>
+      <td>${sessions !== null ? sessions : '—'}</td>
+      <td>${cvr !== null ? cvr.toFixed(2)+'%' : '—'}</td>
+      <td style="font-weight:800; font-size:1.1rem; color:${gradeColor};">${grade}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
 // Main initialization for the tracker tab
 async function initTrackerTab() {
   const data = await fetchWeeklyData();
@@ -349,6 +617,10 @@ async function initTrackerTab() {
     buildWeekOnWeekTable(data);
     buildStrategiesPanel(data);
     initTrackerCharts(data);
+    // Also init targets tab (data-driven)
+    buildTargetGauges(data);
+    buildTargetCharts(data);
+    buildWeeklyScorecard(data);
   } else {
     document.getElementById('tracker-status').innerHTML =
       '<span style="color:var(--red); font-weight:600;">⚠️ Could not load live data. Make sure data.json exists.</span>';
