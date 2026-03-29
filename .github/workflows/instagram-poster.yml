@@ -1,15 +1,25 @@
 name: Daily Instagram Reel Poster
 
 on:
-  schedule:
-    # Run daily at 9:00 AM AEST (11:00 PM UTC the previous day)
-    - cron: '0 23 * * *'
   workflow_dispatch:
     inputs:
+      video_drive_id:
+        description: 'Google Drive file ID of the video to post'
+        required: true
+        type: string
+      caption:
+        description: 'Instagram post caption'
+        required: true
+        type: string
+      hashtags:
+        description: 'Hashtags to append to the caption'
+        required: false
+        default: ''
+        type: string
       dry_run:
         description: 'Run in dry-run mode (no actual posts)'
         required: false
-        default: 'true'
+        default: 'false'
         type: choice
         options:
           - 'true'
@@ -33,16 +43,16 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests google-auth-oauthlib google-auth-httplib2 google-api-python-client
+          pip install requests
 
       - name: Run Instagram Reel Poster
         env:
           META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
-          GOOGLE_SHEETS_API_KEY: ${{ secrets.GOOGLE_SHEETS_API_KEY }}
-          CAMPAIGN_SHEET_ID: '1O_h1tb6jvB1yXCb8fpUUh3s1teZlZydq4pxSucsok4w'
           INSTAGRAM_BUSINESS_ACCOUNT_ID: '17841474550556991'
-          FACEBOOK_PAGE_ID: '1253807941139935'
-          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+          VIDEO_DRIVE_ID: ${{ inputs.video_drive_id }}
+          CAPTION: ${{ inputs.caption }}
+          HASHTAGS: ${{ inputs.hashtags }}
+          DRY_RUN: ${{ inputs.dry_run || 'false' }}
         run: |
           python scripts/instagram_poster.py
 
