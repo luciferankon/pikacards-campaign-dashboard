@@ -48,11 +48,18 @@
       "implemented": "2026-03-28",
       "category": "retention",
       "description": "Made Appstle loyalty points more prominent on product pages"
+    },
+    {
+      "id": "instagram-campaign",
+      "name": "30-Day Instagram Campaign",
+      "implemented": "2026-03-29",
+      "category": "traffic",
+      "description": "Automated daily Instagram Reels posting from pack opening videos — 30-day content calendar"
     }
   ],
   "baseline": {
-    "period": "Jan 12 – Mar 23 (pre-strategy)",
-    "weeks": 11,
+    "period": "Jan 12 – Mar 22 (pre-strategy)",
+    "weeks": 10,
     "shopify": {
       "avg_weekly_revenue": 916.54,
       "avg_weekly_orders": 3.7,
@@ -144,9 +151,17 @@
     },
     {
       "week": "2026-03-23",
-      "label": "Mar 23",
-      "strategies_active": false,
-      "shopify": { "revenue": 2261.00, "orders": 5, "items": 15, "aov": 452.20, "returns": 0 },
+      "label": "Mar 23 ⚡",
+      "strategies_active": true,
+      "shopify": { "revenue": 2758.00, "orders": 5, "items": 18, "aov": 551.60, "returns": 0 },
+      "ga4": { "sessions": null, "conversion_rate": null, "engagement_rate": null, "organic_sessions": null, "paid_sessions": null, "add_to_cart_rate": null, "checkout_completion_rate": null }
+    },
+    {
+      "week": "2026-03-30",
+      "label": "Mar 30 ⚡",
+      "strategies_active": true,
+      "note": "Partial week — Monday only so far",
+      "shopify": { "revenue": 1353.95, "orders": 3, "items": 9, "aov": 451.32, "returns": 0 },
       "ga4": { "sessions": null, "conversion_rate": null, "engagement_rate": null, "organic_sessions": null, "paid_sessions": null, "add_to_cart_rate": null, "checkout_completion_rate": null }
     }
   ]
