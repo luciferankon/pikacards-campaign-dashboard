@@ -48,9 +48,9 @@ function updateTrackerKPIs(data) {
   const beforeAOV = preWeeks.length > 0
     ? preWeeks.reduce((s, w) => s + (w.shopify?.aov || 0), 0) / preWeeks.length
     : 0;
-  const beforeItems = preWeeks.length > 0
-    ? preWeeks.reduce((s, w) => s + (w.shopify?.items || 0), 0) / preWeeks.length
-    : 0;
+  const beforeTotalItems = preWeeks.reduce((s, w) => s + (w.shopify?.items || 0), 0);
+  const beforeTotalOrders = preWeeks.reduce((s, w) => s + (w.shopify?.orders || 0), 0);
+  const beforeItems = beforeTotalOrders > 0 ? beforeTotalItems / beforeTotalOrders : 0;
 
   // Update BEFORE metrics
   document.getElementById('before-revenue').textContent = '$' + beforeRevenue.toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0});
@@ -63,7 +63,9 @@ function updateTrackerKPIs(data) {
     const afterRevenue = postWeeks.reduce((s, w) => s + (w.shopify?.revenue || 0), 0) / postWeeks.length;
     const afterOrders = postWeeks.reduce((s, w) => s + (w.shopify?.orders || 0), 0) / postWeeks.length;
     const afterAOV = postWeeks.reduce((s, w) => s + (w.shopify?.aov || 0), 0) / postWeeks.length;
-    const afterItems = postWeeks.reduce((s, w) => s + (w.shopify?.items || 0), 0) / postWeeks.length;
+    const afterTotalItems = postWeeks.reduce((s, w) => s + (w.shopify?.items || 0), 0);
+    const afterTotalOrders = postWeeks.reduce((s, w) => s + (w.shopify?.orders || 0), 0);
+    const afterItems = afterTotalOrders > 0 ? afterTotalItems / afterTotalOrders : 0;
 
     const revenueDelta = calculateWoWChange(afterRevenue, beforeRevenue);
     const ordersDelta = calculateWoWChange(afterOrders, beforeOrders);
@@ -366,7 +368,9 @@ function buildTargetGauges(data) {
   const recentRevenue = last4.length > 0 ? last4.reduce((s,w) => s + w.shopify.revenue, 0) / last4.length : 0;
   const recentOrders = last4.length > 0 ? last4.reduce((s,w) => s + w.shopify.orders, 0) / last4.length : 0;
   const recentAOV = last4.length > 0 ? last4.reduce((s,w) => s + w.shopify.aov, 0) / last4.length : 0;
-  const recentItems = last4.length > 0 ? last4.reduce((s,w) => s + (w.shopify.items / Math.max(w.shopify.orders,1)), 0) / last4.length : 0;
+  const recentTotalItems = last4.reduce((s,w) => s + (w.shopify.items || 0), 0);
+  const recentTotalOrders = last4.reduce((s,w) => s + (w.shopify.orders || 0), 0);
+  const recentItems = recentTotalOrders > 0 ? recentTotalItems / recentTotalOrders : 0;
 
   // GA4 metrics from baseline (since we don't have weekly GA4 yet)
   const ga4 = data.baseline?.ga4 || {};
