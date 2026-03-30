@@ -58,13 +58,13 @@
     }
   ],
   "baseline": {
-    "period": "Jan 12 – Mar 22 (pre-strategy)",
-    "weeks": 10,
+    "period": "Jan 12 – Mar 27 (pre-strategy)",
+    "weeks": 11,
     "shopify": {
-      "avg_weekly_revenue": 916.54,
-      "avg_weekly_orders": 3.7,
-      "avg_aov": 247.71,
-      "total_revenue": 9165.39
+      "avg_weekly_revenue": 1083.04,
+      "avg_weekly_orders": 3.8,
+      "avg_aov": 292.09,
+      "total_revenue": 11913.39
     },
     "ga4": {
       "avg_weekly_sessions": 245,
@@ -151,8 +151,8 @@
     },
     {
       "week": "2026-03-23",
-      "label": "Mar 23 ⚡",
-      "strategies_active": true,
+      "label": "Mar 23",
+      "strategies_active": false,
       "shopify": { "revenue": 2758.00, "orders": 5, "items": 18, "aov": 551.60, "returns": 0 },
       "ga4": { "sessions": null, "conversion_rate": null, "engagement_rate": null, "organic_sessions": null, "paid_sessions": null, "add_to_cart_rate": null, "checkout_completion_rate": null }
     },
