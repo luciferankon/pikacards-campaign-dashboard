@@ -169,8 +169,8 @@
       "week": "2026-03-30",
       "label": "Mar 30 ⚡",
       "strategies_active": true,
-      "note": "Partial week — Monday only so far",
-      "shopify": { "revenue": 1353.95, "orders": 3, "items": 9, "aov": 451.32, "returns": 0 },
+      "note": "Partial week — through Apr 3",
+      "shopify": { "revenue": 2834.90, "orders": 8, "items": 21, "aov": 354.36, "returns": 0 },
       "ga4": { "sessions": null, "conversion_rate": null, "engagement_rate": null, "organic_sessions": null, "paid_sessions": null, "add_to_cart_rate": null, "checkout_completion_rate": null }
     }
   ]
